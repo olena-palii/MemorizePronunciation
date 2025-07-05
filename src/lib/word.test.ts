@@ -1,5 +1,5 @@
 import { test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Word, NormalizationError } from '$lib';
+import { Word, NormalizationError } from './word';
 
 beforeEach(() => {
     vi.useFakeTimers();

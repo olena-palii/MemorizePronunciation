@@ -1,5 +1,6 @@
 import { test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Word, dbWords } from '$lib';
+import { Word } from '$lib';
+import * as dbWords from './db-words';
 
 beforeEach(() => {
     vi.useFakeTimers();
