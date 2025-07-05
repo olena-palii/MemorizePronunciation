@@ -1,13 +1,13 @@
 import { test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Word } from '$lib';
+import type { WordDto } from '$lib';
 import * as dbWords from './db-words';
 
 beforeEach(() => {
     vi.useFakeTimers();
-    const wordUnknownOlder = new Word({ word: 'unknown-older', created: '2000-01-01T00:00:00Z' });
-    const wordKnownNewer = new Word({ word: 'known-newer', created: '2020-12-31T23:59:59Z', learned: '2021-01-31T23:59:59Z' });
-    dbWords.createWord(wordUnknownOlder);
-    dbWords.createWord(wordKnownNewer);
+    const wordUnknownOlder: WordDto = { word: 'unknown-older', created: '2000-01-01T00:00:00Z' };
+    const wordKnownNewer: WordDto = { word: 'known-newer', created: '2020-12-31T23:59:59Z', learned: '2021-01-31T23:59:59Z' };
+    dbWords.saveWords([wordUnknownOlder]);
+    dbWords.saveWords([wordKnownNewer]);
 });
 
 afterEach(() => {
@@ -20,65 +20,21 @@ afterEach(() => {
 test('get word by text', () => {
     const firstWord = dbWords.getWords()[0];
     const word = dbWords.getWordByText(firstWord.word.toUpperCase());
-    expect(word.id).toBe(firstWord.id);
-    expect(word.word).toBe(firstWord.word);
+    expect(word).toBeDefined();
+    expect(word!.id).toBe(firstWord.id);
+    expect(word!.word).toBe(firstWord.word);
 });
 
 test('get word by id', () => {
     const firstWord = dbWords.getWords()[0];
     const word = dbWords.getWordById(firstWord.id!);
-    expect(word.id).toBe(firstWord.id);
-    expect(word.word).toBe(firstWord.word);
+    expect(word!.id).toBe(firstWord.id);
+    expect(word!.word).toBe(firstWord.word);
 });
 
 test('word not found', () => {
-    expect(() => dbWords.getWordByText("not-found")).toThrow('Word not found');
-    expect(() => dbWords.getWordById(-1)).toThrow('Word not found');
-});
-
-// #endregion
-
-// #region Save Words
-
-test('save new word', () => {
-    vi.setSystemTime(new Date('2024-02-29T12:15:59Z'));
-    const word = new Word({ word: 'new-word' });
-    dbWords.saveWord(word);
-    const savedWord = dbWords.getWordByText('new-word');
-    expect(savedWord.word).toBe('new-word');
-    expect(savedWord.id).toBeDefined();
-    expect(savedWord.created).toBe('2024-02-29T12:15:59.000Z');
-    expect(savedWord.learned).toBeNull();
-});
-
-test('save existing word', () => {
-    const word = dbWords.getWordByText('known-newer');
-    word.word = 'updated-word';
-    vi.setSystemTime(new Date('2024-02-29T12:15:59Z'));
-    word.learned = undefined;
-    dbWords.saveWord(word);
-    const updatedWord = dbWords.getWordById(word.id!);
-    expect(updatedWord.word).toBe('updated-word');
-    expect(updatedWord.created).toBe('2020-12-31T23:59:59.000Z');
-    expect(updatedWord.learned).toBeNull();
-});
-
-test('save many words', () => {
-    const words = dbWords.getWords();
-    words[0].word = 'updated-word';
-    words.push(new Word({ word: 'new-word-one' }));
-    words.push(new Word({ word: 'new-word-two' }));
-    words.push(new Word({ word: 'new-word-three' }));
-    const stats = dbWords.saveWords(words);
-    expect(stats.created).toBe(3);
-    expect(stats.updated).toBe(2);
-    const savedWords = dbWords.getWords();
-    expect(savedWords.length).toBe(5);
-    expect(savedWords[0].word).toBe('new-word-three');
-    expect(savedWords[1].word).toBe('new-word-two');
-    expect(savedWords[2].word).toBe('new-word-one');
-    expect(savedWords[3].word).toBe('updated-word');
-    expect(savedWords[4].word).toBe('unknown-older');
+    expect(dbWords.getWordByText("not-found")).toBeUndefined();
+    expect(dbWords.getWordById(-1)).toBeUndefined();
 });
 
 // #endregion
@@ -87,25 +43,37 @@ test('save many words', () => {
 
 test('create word', () => {
     vi.setSystemTime(new Date('2024-02-29T12:15:59Z'));
-    dbWords.createWord(new Word({ word: 'test' }));
+    dbWords.saveWords([{ word: 'new-word' }]);
     const firstWord = dbWords.getWords()[0];
-    expect(firstWord.word).toBe('test');
+    expect(firstWord.word).toBe('new-word');
     expect(firstWord.id).toBeDefined();
     expect(firstWord.created).toBe('2024-02-29T12:15:59.000Z');
     expect(firstWord.learned).toBeNull();
 });
 
 test('create word with custom dates', () => {
-    dbWords.createWord(new Word({ word: 'custom-dates', created: '2024-01-01T10:00:00Z', learned: '2024-01-02T10:00:00Z' }));
+    dbWords.saveWords([{ word: 'custom-dates', created: '2024-01-01T10:00:00Z', learned: '2024-01-02T10:00:00Z' }]);
     const word = dbWords.getWordByText('custom-dates');
-    expect(word.created).toBe('2024-01-01T10:00:00.000Z');
-    expect(word.learned).toBe('2024-01-02T10:00:00.000Z');
+    expect(word).toBeDefined();
+    expect(word!.created).toBe('2024-01-01T10:00:00.000Z');
+    expect(word!.learned).toBe('2024-01-02T10:00:00.000Z');
 });
+
+test('create word with non-existed id', () => {
+    dbWords.saveWords([{ id: 0, word: 'new-word' }]);
+    const firstWord = dbWords.getWords()[0];
+    expect(firstWord.word).toBe('new-word');
+    expect(firstWord.id).toBeDefined();
+    expect(firstWord.id).not.toBe(0);
+});
+
+// #endregion
+
+// #region Duplicates
 
 test('created duplicates must be ignored', () => {
     const wordsBefore = dbWords.getWords();
-    dbWords.createWord(new Word({ word: 'known-newer' }));
-    dbWords.createWord(new Word({ word: 'unknown-older' }));
+    dbWords.saveWords([{ word: 'known-newer' }, { word: 'unknown-older' }]);
     const wordsAfter = dbWords.getWords();
     expect(wordsAfter.length).toBe(wordsBefore.length);
     for (let i = 0; i < wordsBefore.length; i++) {
@@ -116,19 +84,21 @@ test('created duplicates must be ignored', () => {
     }
 });
 
-test('create duplicate with new learned date', () => {
-    dbWords.createWord(new Word({ word: 'known-newer', created: '2020-12-31T23:59:59Z', learned: '2124-03-19T14:10:00Z' }));
+test('update duplicate with new learned date', () => {
+    dbWords.saveWords([{ word: 'known-newer', created: '2020-12-31T23:59:59Z', learned: '2124-03-19T14:10:00Z' }]);
     const word = dbWords.getWordByText('known-newer');
-    expect(word.created).toBe('2020-12-31T23:59:59.000Z');
-    expect(word.learned).toBe('2124-03-19T14:10:00.000Z');
+    expect(word).toBeDefined();
+    expect(word!.created).toBe('2020-12-31T23:59:59.000Z');
+    expect(word!.learned).toBe('2124-03-19T14:10:00.000Z');
 });
 
 test('do not reset dates on duplicate', () => {
-    dbWords.createWord(new Word({ word: 'known-newer' }));
+    dbWords.saveWords([{ word: 'known-newer' }]);
     const word = dbWords.getWordByText('known-newer');
-    expect(word.word).toBe('known-newer');
-    expect(word.created).toBe('2020-12-31T23:59:59.000Z');
-    expect(word.learned).toBe('2021-01-31T23:59:59.000Z');
+    expect(word).toBeDefined();
+    expect(word!.word).toBe('known-newer');
+    expect(word!.created).toBe('2020-12-31T23:59:59.000Z');
+    expect(word!.learned).toBe('2021-01-31T23:59:59.000Z');
 });
 
 // #endregion
@@ -137,10 +107,70 @@ test('do not reset dates on duplicate', () => {
 
 test('update word', () => {
     const word = dbWords.getWordByText('known-newer');
-    word.word = 'updated-word';
-    dbWords.updateWord(word);
-    const updatedWord = dbWords.getWordById(word.id!);
-    expect(updatedWord.word).toBe('updated-word');
+    expect(word).toBeDefined();
+    word!.word = 'updated-word';
+    dbWords.saveWords([word!]);
+    const updatedWord = dbWords.getWordById(word!.id!);
+    expect(updatedWord).toBeDefined();
+    expect(updatedWord!.word).toBe('updated-word');
+    expect(updatedWord!.created).toBe('2020-12-31T23:59:59.000Z');
+    expect(updatedWord!.learned).toBe('2021-01-31T23:59:59.000Z');
+});
+
+test('update learned date to null', () => {
+    const word = dbWords.getWordByText('known-newer');
+    expect(word).toBeDefined();
+    word!.learned = undefined;
+    dbWords.saveWords([word!]);
+    const updatedWord = dbWords.getWordById(word!.id!);
+    expect(updatedWord).toBeDefined();
+    expect(updatedWord!.word).toBe('known-newer');
+    expect(updatedWord!.created).toBe('2020-12-31T23:59:59.000Z');
+    expect(updatedWord!.learned).toBeNull();
+});
+
+// #endregion
+
+// #region Save Statistics
+
+test('save many words', () => {
+    const words: WordDto[] = dbWords.getWords();
+    words[0].word = 'updated-word';
+    words.push({ word: 'new-word' });
+    words.push({ id: 0, word: 'non-existed-id' });
+    words.push({ word: 'duplicate' });
+    words.push({ word: 'duplicate' });
+    words.push({ word: 'duplicate-new-learned' });
+    words.push({ word: 'duplicate-new-learned', learned: '2024-01-01T00:00:00Z' });
+    words.push({ word: ' !!! ' });
+    const stats = dbWords.saveWords(words);
+
+    expect(stats.created.count).toBe(4);
+    expect(stats.created.words.length).toBe(4);
+    expect(stats.created.words[0].word).toBe('new-word');
+    expect(stats.created.words[1].word).toBe('non-existed-id');
+    expect(stats.created.words[2].word).toBe('duplicate');
+    expect(stats.created.words[3].word).toBe('duplicate-new-learned');
+
+    expect(stats.updated.count).toBe(3);
+    expect(stats.updated.words.length).toBe(3);
+    expect(stats.updated.words[0].word).toBe('updated-word');
+    expect(stats.updated.words[1].word).toBe('unknown-older');
+
+    expect(stats.duplicates.count).toBe(1);
+    expect(stats.duplicates.words.length).toBe(1);
+    expect(stats.duplicates.words[0].word).toBe('duplicate');
+
+    expect(stats.skipped.count).toBe(1);
+
+    const savedWords = dbWords.getWords();
+    expect(savedWords.length).toBe(6);
+    expect(savedWords[0].word).toBe('duplicate-new-learned');
+    expect(savedWords[1].word).toBe('duplicate');
+    expect(savedWords[2].word).toBe('non-existed-id');
+    expect(savedWords[3].word).toBe('new-word');
+    expect(savedWords[4].word).toBe('updated-word');
+    expect(savedWords[5].word).toBe('unknown-older');
 });
 
 // #endregion
@@ -150,27 +180,19 @@ test('update word', () => {
 test('delete word', () => {
     const wordsBefore = dbWords.getWords();
     const word = dbWords.getWordByText('known-newer');
-    dbWords.deleteWord(word);
+    expect(word).toBeDefined();
+    dbWords.deleteWord(word!);
     const wordsAfter = dbWords.getWords();
     expect(wordsAfter.length).toBe(wordsBefore.length - 1);
-    expect(() => dbWords.getWordById(word.id!)).toThrow('Word not found');
+    expect(dbWords.getWordById(word!.id!)).toBeUndefined();
 });
 
 test('skip deleting word without id', () => {
     const wordsBefore = dbWords.getWords();
-    const word = new Word({ word: wordsBefore[0].word });
+    const word: WordDto = { word: wordsBefore[0].word };
     dbWords.deleteWord(word);
     const wordsAfter = dbWords.getWords();
     expect(wordsAfter.length).toBe(wordsBefore.length);
-});
-
-test('delete word by id', () => {
-    const wordsBefore = dbWords.getWords();
-    const word = dbWords.getWordByText('known-newer');
-    dbWords.deleteWordById(word.id!);
-    const words = dbWords.getWords();
-    expect(words.length).toBe(wordsBefore.length - 1);
-    expect(() => dbWords.getWordById(word.id!)).toThrow('Word not found');
 });
 
 // #endregion
