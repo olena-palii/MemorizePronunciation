@@ -181,7 +181,7 @@ test('delete word', () => {
     const wordsBefore = dbWords.getWords();
     const word = dbWords.getWordByText('known-newer');
     expect(word).toBeDefined();
-    dbWords.deleteWord(word!);
+    dbWords.deleteWords([word!]);
     const wordsAfter = dbWords.getWords();
     expect(wordsAfter.length).toBe(wordsBefore.length - 1);
     expect(dbWords.getWordById(word!.id!)).toBeUndefined();
@@ -190,9 +190,20 @@ test('delete word', () => {
 test('skip deleting word without id', () => {
     const wordsBefore = dbWords.getWords();
     const word: WordDto = { word: wordsBefore[0].word };
-    dbWords.deleteWord(word);
+    dbWords.deleteWords([word]);
     const wordsAfter = dbWords.getWords();
     expect(wordsAfter.length).toBe(wordsBefore.length);
+});
+
+test('delete statistics', () => {
+    const wordsBefore = dbWords.getWords();
+    const noIdWord: WordDto = { word: 'no-id-word' };
+    const stats = dbWords.deleteWords([wordsBefore[0], noIdWord]);
+    expect(stats.deleted).toBe(1);
+    expect(stats.skipped).toBe(1);
+    const wordsAfter = dbWords.getWords();
+    expect(wordsAfter.length).toBe(wordsBefore.length - 1);
+    expect(dbWords.getWordById(wordsBefore[0].id!)).toBeUndefined();
 });
 
 // #endregion

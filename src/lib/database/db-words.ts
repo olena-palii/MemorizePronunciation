@@ -45,6 +45,7 @@ interface SaveStatistics {
     },
     skipped: {
         count: number;
+        // No skipped words because of possible unsafe values without normalization
     }
 }
 
@@ -109,8 +110,24 @@ function updateWord(word: WordDto, stat: SaveStatistics): void {
 
 // #region Delete Words
 
-export function deleteWord(word: WordDto): void {
-    if (word.id) deleteWordById(word.id);
+interface DeleteStatistics {
+    deleted: number;
+    skipped: number;
+}
+
+export function deleteWords(words: WordDto[]): DeleteStatistics {
+    const stat: DeleteStatistics = {
+        deleted: 0,
+        skipped: 0
+    };
+    for (const word of words) {
+        if (word.id) {
+            deleteWordById(word.id);
+            stat.deleted++;
+        }
+        else stat.skipped++;
+    }
+    return stat;
 }
 
 function deleteWordById(id: number): void {
