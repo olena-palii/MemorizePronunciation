@@ -48,19 +48,19 @@ test('save new word', () => {
     expect(savedWord.word).toBe('new-word');
     expect(savedWord.id).toBeDefined();
     expect(savedWord.created).toBe('2024-02-29T12:15:59.000Z');
-    expect(savedWord.learned).toBeUndefined();
+    expect(savedWord.learned).toBeNull();
 });
 
 test('save existing word', () => {
     const word = dbWords.getWordByText('known-newer');
     word.word = 'updated-word';
     vi.setSystemTime(new Date('2024-02-29T12:15:59Z'));
-    word.resetLearning();
+    word.learned = undefined;
     dbWords.saveWord(word);
     const updatedWord = dbWords.getWordById(word.id!);
     expect(updatedWord.word).toBe('updated-word');
     expect(updatedWord.created).toBe('2020-12-31T23:59:59.000Z');
-    expect(updatedWord.learned).toBeUndefined();
+    expect(updatedWord.learned).toBeNull();
 });
 
 test('save many words', () => {
@@ -92,7 +92,7 @@ test('create word', () => {
     expect(firstWord.word).toBe('test');
     expect(firstWord.id).toBeDefined();
     expect(firstWord.created).toBe('2024-02-29T12:15:59.000Z');
-    expect(firstWord.learned).toBeUndefined();
+    expect(firstWord.learned).toBeNull();
 });
 
 test('create word with custom dates', () => {

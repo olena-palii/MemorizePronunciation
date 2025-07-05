@@ -6,10 +6,9 @@ import type { WordDto } from '$lib';
 
 const FIELDS = 'id, word, created, learned';
 
-export function getWords(): Word[] {
+export function getWords(): WordDto[] {
     const query = db.prepare(`SELECT ${FIELDS} FROM words ORDER BY created DESC, id DESC`);
-    const results = query.all() as WordDto[];
-    return results.map(result => new Word(result));
+    return query.all() as WordDto[];
 }
 
 export class NotFoundError extends Error {
@@ -19,19 +18,19 @@ export class NotFoundError extends Error {
     }
 }
 
-export function getWordByText(text: string): Word {
+export function getWordByText(text: string): WordDto {
     const query = db.prepare(`SELECT ${FIELDS} FROM words WHERE word = ?`);
     const word = Word.normalize(text);
     const result = query.get(word);
     if (!result) throw new NotFoundError(`Word not found by text: ${word}`);
-    return new Word(result as WordDto);
+    return result as WordDto;
 }
 
-export function getWordById(id: number): Word {
+export function getWordById(id: number): WordDto {
     const query = db.prepare(`SELECT ${FIELDS} FROM words WHERE id = ?`);
     const result = query.get(id);
     if (!result) throw new NotFoundError(`Word not found by id: ${id}`);
-    return new Word(result as WordDto);
+    return result as WordDto;
 }
 
 // #endregion
@@ -43,7 +42,7 @@ interface SaveStatistics {
     updated: number;
 }
 
-export function saveWords(words: Word[]): SaveStatistics {
+export function saveWords(words: WordDto[]): SaveStatistics {
     const stat: SaveStatistics = { created: 0, updated: 0 };
     for (const word of words) {
         if (word.id) {
@@ -58,12 +57,12 @@ export function saveWords(words: Word[]): SaveStatistics {
     return stat;
 }
 
-export function saveWord(word: Word): void {
+export function saveWord(word: WordDto): void {
     if (word.id) updateWord(word);
     else createWord(word);
 }
 
-export function createWord(word: Word): void {
+export function createWord(word: WordDto): void {
     const query = db.prepare(`
         INSERT INTO words (word, created, learned) VALUES (?, ?, ?)
         ON CONFLICT(word) DO UPDATE SET learned = COALESCE(excluded.learned, words.learned)
@@ -71,7 +70,7 @@ export function createWord(word: Word): void {
     query.run(word.word, word.created, word.learned);
 }
 
-export function updateWord(word: Word): void {
+export function updateWord(word: WordDto): void {
     const query = db.prepare(`UPDATE words SET word = ?, created = COALESCE(?, words.created), learned = ? WHERE id = ?`);
     query.run(word.word, word.created, word.learned, word.id);
 }
@@ -80,7 +79,7 @@ export function updateWord(word: Word): void {
 
 // #region Delete Words
 
-export function deleteWord(word: Word): void {
+export function deleteWord(word: WordDto): void {
     if (word.id) deleteWordById(word.id);
 }
 
