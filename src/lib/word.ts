@@ -1,9 +1,4 @@
-export interface WordDto {
-    id?: number;
-    word: string;
-    created?: string;
-    learned?: string;
-}
+import type { WordDto } from '$lib';
 
 export class Word {
     id?: number;

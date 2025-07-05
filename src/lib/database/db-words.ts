@@ -1,6 +1,6 @@
 import db from './db';
 import { Word } from '$lib';
-import type { WordDto } from '$lib';
+import type { WordDto, SaveStatisticsDto, DeleteStatisticsDto } from '$lib';
 
 // #region Get Words
 
@@ -30,27 +30,8 @@ export function getWordById(id: number): WordDto | undefined {
 
 // #region Save Words
 
-interface SaveStatistics {
-    created: {
-        count: number;
-        words: WordDto[];
-    }
-    updated: {
-        count: number;
-        words: WordDto[];
-    }
-    duplicates: {
-        count: number;
-        words: WordDto[];
-    },
-    skipped: {
-        count: number;
-        // No skipped words because of possible unsafe values without normalization
-    }
-}
-
-export function saveWords(words: WordDto[]): SaveStatistics {
-    const stat: SaveStatistics = {
+export function saveWords(words: WordDto[]): SaveStatisticsDto {
+    const stat: SaveStatisticsDto = {
         created: { count: 0, words: [] },
         updated: { count: 0, words: [] },
         duplicates: { count: 0, words: [] },
@@ -88,7 +69,7 @@ export function saveWords(words: WordDto[]): SaveStatistics {
     return stat;
 }
 
-function createWord(word: WordDto, stat: SaveStatistics): void {
+function createWord(word: WordDto, stat: SaveStatisticsDto): void {
     const query = db.prepare(`INSERT INTO words (word, created, learned) VALUES (?, ?, ?) RETURNING ${FIELDS}`);
     const createdISO = word.created ? new Date(word.created).toISOString() : new Date().toISOString();
     const learnedISO = word.learned ? new Date(word.learned).toISOString() : null;
@@ -97,7 +78,7 @@ function createWord(word: WordDto, stat: SaveStatistics): void {
     stat.created.words.push(inserted);
 }
 
-function updateWord(word: WordDto, stat: SaveStatistics): void {
+function updateWord(word: WordDto, stat: SaveStatisticsDto): void {
     const query = db.prepare(`UPDATE words SET word = ?, created = COALESCE(?, words.created), learned = ? WHERE id = ? RETURNING ${FIELDS}`);
     const createdISO = word.created ? new Date(word.created).toISOString() : null;
     const learnedISO = word.learned ? new Date(word.learned).toISOString() : null;
@@ -110,13 +91,8 @@ function updateWord(word: WordDto, stat: SaveStatistics): void {
 
 // #region Delete Words
 
-interface DeleteStatistics {
-    deleted: number;
-    skipped: number;
-}
-
-export function deleteWords(words: WordDto[]): DeleteStatistics {
-    const stat: DeleteStatistics = {
+export function deleteWords(words: WordDto[]): DeleteStatisticsDto {
+    const stat: DeleteStatisticsDto = {
         deleted: 0,
         skipped: 0
     };
