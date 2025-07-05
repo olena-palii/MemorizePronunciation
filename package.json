@@ -10,24 +10,26 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test:unit": "vitest",
+		"test:unit": "DB_PATH='test.db' vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test"
+		"test:e2e": "DB_PATH='test.db' playwright test"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.49.1",
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"@tailwindcss/vite": "^4.1.11",
+		"@types/better-sqlite3": "^7.6.13",
 		"daisyui": "^5.0.43",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
+		"tailwindcss": "^4.1.11",
 		"typescript": "^5.0.0",
 		"vite": "^6.2.6",
 		"vitest": "^3.2.3"
 	},
 	"dependencies": {
-		"@tailwindcss/vite": "^4.1.11",
-		"tailwindcss": "^4.1.11"
+		"better-sqlite3": "^12.2.0"
 	}
 }
