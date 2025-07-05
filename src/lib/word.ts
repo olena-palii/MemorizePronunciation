@@ -5,13 +5,6 @@ export interface WordDto {
     learned?: string;
 }
 
-export class NormalizationError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = "NormalizationError";
-    }
-}
-
 export class Word {
     id?: number;
     private _word: string = '';
@@ -52,7 +45,6 @@ export class Word {
         word = word.replace(/^[ '-]+|[ '-]+$/g, '');
         word = word.trim();
         word = word.slice(0, 50);
-        if (word.length === 0) throw new NormalizationError("Word is empty after normalization");
         return word;
     }
 
