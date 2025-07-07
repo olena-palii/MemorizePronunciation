@@ -1,5 +1,5 @@
 import { test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Word, NormalizationError } from '$lib';
+import { Word } from './word';
 
 beforeEach(() => {
     vi.useFakeTimers();
@@ -41,8 +41,8 @@ test('normalize word in different languages', () => {
 });
 
 test('normalize word to empty string', () => {
-    expect(() => new Word({ word: ' !!! ' })).toThrow(NormalizationError);
-    expect(() => new Word({ word: ' !!! ' })).toThrow('Word is empty after normalization');
+    const word = new Word({ word: ' !!! ' });
+    expect(word.word).toBe("");
 });
 
 test('isLearned value', () => {

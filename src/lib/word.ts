@@ -1,16 +1,4 @@
-export interface WordDto {
-    id?: number;
-    word: string;
-    created?: string;
-    learned?: string;
-}
-
-export class NormalizationError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = "NormalizationError";
-    }
-}
+import type { WordDto } from '$lib';
 
 export class Word {
     id?: number;
@@ -52,7 +40,6 @@ export class Word {
         word = word.replace(/^[ '-]+|[ '-]+$/g, '');
         word = word.trim();
         word = word.slice(0, 50);
-        if (word.length === 0) throw new NormalizationError("Word is empty after normalization");
         return word;
     }
 
@@ -74,6 +61,11 @@ export class Word {
 
     get isLearned(): boolean {
         return !!this.learned;
+    }
+
+    set isLearned(value: boolean) {
+        if (value) this.markAsLearned();
+        else this.resetLearning();
     }
 
     get learningPeriod(): string {

@@ -1,92 +1,112 @@
 import db from './db';
 import { Word } from '$lib';
-import type { WordDto } from '$lib';
+import type { WordDto, SaveStatisticsDto, DeleteStatisticsDto } from '$lib';
 
 // #region Get Words
 
 const FIELDS = 'id, word, created, learned';
 
-export function getWords(): Word[] {
+export function getWords(): WordDto[] {
     const query = db.prepare(`SELECT ${FIELDS} FROM words ORDER BY created DESC, id DESC`);
-    const results = query.all() as WordDto[];
-    return results.map(result => new Word(result));
+    return query.all() as WordDto[];
 }
 
-export class NotFoundError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'NotFoundError';
-    }
-}
-
-export function getWordByText(text: string): Word {
+export function getWordByText(text: string): WordDto | undefined {
     const query = db.prepare(`SELECT ${FIELDS} FROM words WHERE word = ?`);
     const word = Word.normalize(text);
     const result = query.get(word);
-    if (!result) throw new NotFoundError(`Word not found by text: ${word}`);
-    return new Word(result as WordDto);
+    if (!result) return undefined;
+    return result as WordDto;
 }
 
-export function getWordById(id: number): Word {
+export function getWordById(id: number): WordDto | undefined {
     const query = db.prepare(`SELECT ${FIELDS} FROM words WHERE id = ?`);
     const result = query.get(id);
-    if (!result) throw new NotFoundError(`Word not found by id: ${id}`);
-    return new Word(result as WordDto);
+    if (!result) return undefined;
+    return result as WordDto;
 }
 
 // #endregion
 
 // #region Save Words
 
-interface SaveStatistics {
-    created: number;
-    updated: number;
-}
+export function saveWords(words: WordDto[]): SaveStatisticsDto {
+    const stat: SaveStatisticsDto = {
+        created: { count: 0, words: [] },
+        updated: { count: 0, words: [] },
+        duplicates: { count: 0, words: [] },
+        skipped: { count: 0 }
+    };
 
-export function saveWords(words: Word[]): SaveStatistics {
-    const stat: SaveStatistics = { created: 0, updated: 0 };
     for (const word of words) {
-        if (word.id) {
-            updateWord(word);
-            stat.updated++;
+        // Skip empty words
+        word.word = Word.normalize(word.word);
+        if (!word.word) {
+            stat.skipped.count++;
+            continue;
         }
-        else {
-            createWord(word);
-            stat.created++;
+        // Update if word with this id exists
+        if (word.id && getWordById(word.id)) {
+            updateWord(word, stat);
+            continue;
         }
+        // Update learned date of duplicate if it is changed
+        const duplicate = getWordByText(word.word);
+        if (duplicate && word.learned && duplicate.learned != word.learned) {
+            duplicate!.learned = word.learned;
+            updateWord(duplicate!, stat);
+            continue;
+        }
+        // Skip duplicate
+        if (duplicate) {
+            stat.duplicates.count++;
+            stat.duplicates.words.push(duplicate);
+            continue;
+        }
+        // Create new word otherwise
+        createWord(word, stat);
     }
     return stat;
 }
 
-export function saveWord(word: Word): void {
-    if (word.id) updateWord(word);
-    else createWord(word);
+function createWord(word: WordDto, stat: SaveStatisticsDto): void {
+    const query = db.prepare(`INSERT INTO words (word, created, learned) VALUES (?, ?, ?) RETURNING ${FIELDS}`);
+    const createdISO = word.created ? new Date(word.created).toISOString() : new Date().toISOString();
+    const learnedISO = word.learned ? new Date(word.learned).toISOString() : null;
+    const inserted = query.get(word.word, createdISO, learnedISO) as WordDto;
+    stat.created.count++;
+    stat.created.words.push(inserted);
 }
 
-export function createWord(word: Word): void {
-    const query = db.prepare(`
-        INSERT INTO words (word, created, learned) VALUES (?, ?, ?)
-        ON CONFLICT(word) DO UPDATE SET learned = COALESCE(excluded.learned, words.learned)
-    `);
-    query.run(word.word, word.created, word.learned);
-}
-
-export function updateWord(word: Word): void {
-    const query = db.prepare(`UPDATE words SET word = ?, created = COALESCE(?, words.created), learned = ? WHERE id = ?`);
-    query.run(word.word, word.created, word.learned, word.id);
+function updateWord(word: WordDto, stat: SaveStatisticsDto): void {
+    const query = db.prepare(`UPDATE words SET word = ?, created = COALESCE(?, words.created), learned = ? WHERE id = ? RETURNING ${FIELDS}`);
+    const createdISO = word.created ? new Date(word.created).toISOString() : null;
+    const learnedISO = word.learned ? new Date(word.learned).toISOString() : null;
+    const updated = query.get(word.word, createdISO, learnedISO, word.id) as WordDto;
+    stat.updated.count++;
+    stat.updated.words.push(updated);
 }
 
 // #endregion
 
 // #region Delete Words
 
-export function deleteWord(word: Word): void {
-    if (word.id) deleteWordById(word.id);
+export function deleteWords(words: WordDto[]): DeleteStatisticsDto {
+    const stat: DeleteStatisticsDto = {
+        deleted: 0,
+        skipped: 0
+    };
+    for (const word of words) {
+        if (word.id) deleteWordById(word.id, stat);
+        else stat.skipped++;
+    }
+    return stat;
 }
 
-export function deleteWordById(id: number): void {
+function deleteWordById(id: number, stat: DeleteStatisticsDto): void {
     const query = db.prepare('DELETE FROM words WHERE id = ?');
     query.run(id);
+    stat.deleted++;
 }
 
 export function __testOnly_clearTable(): void {
