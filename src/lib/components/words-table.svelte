@@ -6,9 +6,10 @@
     words: Word[];
     saveWord: (word: Word) => any;
     deleteWord: (word: Word) => any;
+    onDoubkeClick?: (word: Word) => void;
   }
 
-  let { words, saveWord, deleteWord }: Props = $props();
+  let { words, saveWord, deleteWord, onDoubkeClick }: Props = $props();
 </script>
 
 <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -24,7 +25,7 @@
     </thead>
     <tbody>
       {#each words as word (word.id)}
-      <tr class="hover:bg-base-300">
+      <tr class="hover:bg-base-300" ondblclick={() => { if (onDoubkeClick) onDoubkeClick(word); }}>
         <th>
           <label>
             <input type="checkbox" class="checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; saveWord(word); }} />
