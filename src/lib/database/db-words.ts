@@ -7,7 +7,7 @@ import type { WordDto, SaveStatisticsDto, DeleteStatisticsDto } from '$lib';
 const FIELDS = 'id, word, created, learned';
 
 export function getWords(): WordDto[] {
-    const query = db.prepare(`SELECT ${FIELDS} FROM words ORDER BY learned DESC, created DESC, id DESC`);
+    const query = db.prepare(`SELECT ${FIELDS} FROM words ORDER BY (learned IS NOT NULL), learned DESC, created DESC, id DESC`);
     return query.all() as WordDto[];
 }
 

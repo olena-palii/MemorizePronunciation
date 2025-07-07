@@ -44,9 +44,7 @@ test('word not found', () => {
 test('create word', () => {
     vi.setSystemTime(new Date('2024-02-29T12:15:59Z'));
     dbWords.saveWords([{ word: 'new-word' }]);
-    const words = dbWords.getWords();
-    const wordsUknown= words.filter(word => word.learned === null);
-    const firstWord = wordsUknown[0];
+    const firstWord = dbWords.getWords()[0];
     expect(firstWord.word).toBe('new-word');
     expect(firstWord.id).toBeDefined();
     expect(firstWord.created).toBe('2024-02-29T12:15:59.000Z');
@@ -63,9 +61,7 @@ test('create word with custom dates', () => {
 
 test('create word with non-existed id', () => {
     dbWords.saveWords([{ id: 0, word: 'new-word' }]);
-    const words = dbWords.getWords();
-    const wordsUknown= words.filter(word => word.learned === null);
-    const firstWord = wordsUknown[0];
+    const firstWord = dbWords.getWords()[0];
     expect(firstWord.word).toBe('new-word');
     expect(firstWord.id).toBeDefined();
     expect(firstWord.id).not.toBe(0);
@@ -148,6 +144,7 @@ test('save many words', () => {
     words.push({ word: 'duplicate-new-learned', learned: '2024-01-01T00:00:00Z' });
     words.push({ word: ' !!! ' });
     const stats = dbWords.saveWords(words);
+    console.log(JSON.stringify(stats));
 
     expect(stats.created.count).toBe(4);
     expect(stats.created.words.length).toBe(4);
@@ -155,11 +152,14 @@ test('save many words', () => {
     expect(stats.created.words[1].word).toBe('non-existed-id');
     expect(stats.created.words[2].word).toBe('duplicate');
     expect(stats.created.words[3].word).toBe('duplicate-new-learned');
+    expect(stats.created.words[3].learned).toBeNull();
 
     expect(stats.updated.count).toBe(3);
     expect(stats.updated.words.length).toBe(3);
     expect(stats.updated.words[0].word).toBe('updated-word');
-    expect(stats.updated.words[1].word).toBe('unknown-older');
+    expect(stats.updated.words[1].word).toBe('known-newer');
+    expect(stats.updated.words[2].word).toBe('duplicate-new-learned');
+    expect(stats.updated.words[2].learned).toBe('2024-01-01T00:00:00.000Z');
 
     expect(stats.duplicates.count).toBe(1);
     expect(stats.duplicates.words.length).toBe(1);
