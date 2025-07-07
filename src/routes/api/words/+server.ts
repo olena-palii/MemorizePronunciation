@@ -6,14 +6,14 @@ export async function GET() {
     return new Response(JSON.stringify(words), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }
 
-export async function POST(request: Request) {
-    const words = await request.json() as WordDto[];
+export async function POST(event: { request: Request }) {
+    const words = await event.request.json() as WordDto[];
     const stat = dbWords.saveWords(words);
     return new Response(JSON.stringify(stat), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }
 
-export async function DELETE(request: Request) {
-    const words = await request.json() as WordDto[];
+export async function DELETE(event: { request: Request }) {
+    const words = await event.request.json() as WordDto[];
     const stat = dbWords.deleteWords(words);
     return new Response(JSON.stringify(stat), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }

@@ -24,14 +24,14 @@ function generateRandomWords(count: number): WordDto[] {
 
 async function createWords(words: WordDto[]): Promise<SaveStatisticsDto> {
     const request = new Request(URL, { method: 'POST', body: JSON.stringify(words) });
-    const response = await api.POST(request);
+    const response = await api.POST({ request });
     expect(response.status).toBe(200);
     return await response.json() as SaveStatisticsDto;
 }
 
 async function deleteWords(words: WordDto[]): Promise<DeleteStatisticsDto> {
     const request = new Request(URL, { method: 'DELETE', body: JSON.stringify(words) });
-    const response = await api.DELETE(request);
+    const response = await api.DELETE({ request });
     expect(response.status).toBe(200);
     return await response.json() as DeleteStatisticsDto;
 }
@@ -75,7 +75,7 @@ test('delete words', async () => {
 
 afterAll(async () => {
     const words = await getWords();
-    await deleteWords(words);
+    if (words.length > 0) await deleteWords(words);
 });
 
 // #endregion
