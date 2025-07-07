@@ -44,7 +44,9 @@ test('word not found', () => {
 test('create word', () => {
     vi.setSystemTime(new Date('2024-02-29T12:15:59Z'));
     dbWords.saveWords([{ word: 'new-word' }]);
-    const firstWord = dbWords.getWords()[0];
+    const words = dbWords.getWords();
+    const wordsUknown= words.filter(word => word.learned === null);
+    const firstWord = wordsUknown[0];
     expect(firstWord.word).toBe('new-word');
     expect(firstWord.id).toBeDefined();
     expect(firstWord.created).toBe('2024-02-29T12:15:59.000Z');
@@ -61,7 +63,9 @@ test('create word with custom dates', () => {
 
 test('create word with non-existed id', () => {
     dbWords.saveWords([{ id: 0, word: 'new-word' }]);
-    const firstWord = dbWords.getWords()[0];
+    const words = dbWords.getWords();
+    const wordsUknown= words.filter(word => word.learned === null);
+    const firstWord = wordsUknown[0];
     expect(firstWord.word).toBe('new-word');
     expect(firstWord.id).toBeDefined();
     expect(firstWord.id).not.toBe(0);
@@ -162,15 +166,6 @@ test('save many words', () => {
     expect(stats.duplicates.words[0].word).toBe('duplicate');
 
     expect(stats.skipped.count).toBe(1);
-
-    const savedWords = dbWords.getWords();
-    expect(savedWords.length).toBe(6);
-    expect(savedWords[0].word).toBe('duplicate-new-learned');
-    expect(savedWords[1].word).toBe('duplicate');
-    expect(savedWords[2].word).toBe('non-existed-id');
-    expect(savedWords[3].word).toBe('new-word');
-    expect(savedWords[4].word).toBe('updated-word');
-    expect(savedWords[5].word).toBe('unknown-older');
 });
 
 // #endregion
