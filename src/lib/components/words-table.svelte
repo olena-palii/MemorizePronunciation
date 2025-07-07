@@ -4,8 +4,8 @@
 
   interface Props {
     words: Word[];
-    saveWord: (word: Word) => Promise<void>;
-    deleteWord: (word: Word) => Promise<void>;
+    saveWord: (word: Word) => any;
+    deleteWord: (word: Word) => any;
   }
 
   let { words, saveWord, deleteWord }: Props = $props();
@@ -27,7 +27,7 @@
       <tr>
         <th>
           <label>
-            <input type="checkbox" class="checkbox" bind:checked={word.isLearned} onchange={() => saveWord(word)} />
+            <input type="checkbox" class="checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; saveWord(word); }} />
           </label>
         </th>
         <td>{word.word}</td>
