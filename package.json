@@ -10,9 +10,9 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test:unit": "DB_PATH='test.db' vitest",
+		"test:unit": "DB_PATH=':memory:' vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "DB_PATH='test.db' playwright test"
+		"test:e2e": "DB_PATH=':memory:' playwright test"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.49.1",
