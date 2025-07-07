@@ -24,7 +24,7 @@
     </thead>
     <tbody>
       {#each words as word (word.id)}
-      <tr>
+      <tr class="hover:bg-base-300">
         <th>
           <label>
             <input type="checkbox" class="checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; saveWord(word); }} />
