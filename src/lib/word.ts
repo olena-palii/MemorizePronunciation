@@ -87,6 +87,7 @@ export class Word {
 
     resetLearning(): void {
         this.learned = undefined;
+        this.created = new Date();
     }
 
     toDto(): WordDto {
