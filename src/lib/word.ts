@@ -63,6 +63,11 @@ export class Word {
         return !!this.learned;
     }
 
+    set isLearned(value: boolean) {
+        if (value) this.markAsLearned();
+        else this.resetLearning();
+    }
+
     get learningPeriod(): string {
         const fromDate = new Date(this.created);
         const toDate = this.learned ? new Date(this.learned) : new Date();
