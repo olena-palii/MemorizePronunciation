@@ -2,3 +2,4 @@
 export { Word } from "./word";
 export type { WordDto, SaveStatisticsDto, DeleteStatisticsDto } from "./dto";
 export * as apiWords from "./api/api-words";
+export { default as WordsTable } from './components/words-table.svelte';
