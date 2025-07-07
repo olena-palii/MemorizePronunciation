@@ -97,18 +97,16 @@ export function deleteWords(words: WordDto[]): DeleteStatisticsDto {
         skipped: 0
     };
     for (const word of words) {
-        if (word.id) {
-            deleteWordById(word.id);
-            stat.deleted++;
-        }
+        if (word.id) deleteWordById(word.id, stat);
         else stat.skipped++;
     }
     return stat;
 }
 
-function deleteWordById(id: number): void {
+function deleteWordById(id: number, stat: DeleteStatisticsDto): void {
     const query = db.prepare('DELETE FROM words WHERE id = ?');
     query.run(id);
+    stat.deleted++;
 }
 
 export function __testOnly_clearTable(): void {

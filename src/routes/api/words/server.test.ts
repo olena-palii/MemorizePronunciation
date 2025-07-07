@@ -65,20 +65,16 @@ test('create words', async () => {
 });
 
 test('delete words', async () => {
-    // create multiple words
     const generatedWords = generateRandomWords(3);
     const stat: SaveStatisticsDto = await createWords(generatedWords);
     expect(stat.created.words.length).toBe(generatedWords.length);
-    // delete all created words
     const deleteStat: DeleteStatisticsDto = await deleteWords(stat.created.words);
     expect(deleteStat.deleted).toBe(generatedWords.length);
     expect(deleteStat.skipped).toBe(0);
 });
 
 afterAll(async () => {
-    // get all words
     const words = await getWords();
-    // delete all words
     await deleteWords(words);
 });
 
