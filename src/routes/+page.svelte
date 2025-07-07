@@ -45,7 +45,7 @@
   <button class="btn join-item" on:click={addWord}>Add</button>
 </div>
 
-<div class="flex justify-center min-h-screen">
+<div class="flex justify-center min-h-screen gap-4">
   <div>
     <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} />
   </div>
