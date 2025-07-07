@@ -11,13 +11,13 @@
   let { words, saveWord, deleteWord }: Props = $props();
 </script>
 
-<div class="overflow-x-auto">
-  <table class="table">
+<div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+  <table class="table-sm">
     <thead>
       <tr>
         <th>Learned</th>
-        <th>Word</th>
         <th>Listen</th>
+        <th>Word</th>
         <th>Learning</th>
         <th>Delete</th>
       </tr>
@@ -30,7 +30,6 @@
             <input type="checkbox" class="checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; saveWord(word); }} />
           </label>
         </th>
-        <td>{word.word}</td>
         <td>
           <div class="tooltip" data-tip="Listen to pronunciation">
             <button class="btn btn-square" aria-label="Listen to pronunciation" data-tip>
@@ -40,6 +39,7 @@
             </button>
           </div>
         </td>
+        <td>{word.word}</td>
         <td>{word.learningPeriod}</td>
         <td>
           <div class="tooltip" data-tip="Delete word">
