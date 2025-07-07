@@ -40,11 +40,16 @@
   }
 </script>
 
-<div class="flex items-center gap-2 mb-4 p-4">
-  <input type="text" placeholder="Add new word" class="input" bind:value={newWord} on:keydown={handleKeydown}/>
-  <button class="btn" on:click={addWord}>Add</button>
+<div class="join flex justify-center p-4">
+  <input type="text" placeholder="Add new word" class="input join-item" bind:value={newWord} on:keydown={handleKeydown}/>
+  <button class="btn join-item" on:click={addWord}>Add</button>
 </div>
 
-<WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} />
-
-<WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} />
+<div class="flex justify-center min-h-screen">
+  <div>
+    <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} />
+  </div>
+  <div>
+    <WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} />
+  </div>
+</div>
