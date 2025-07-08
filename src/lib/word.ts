@@ -28,7 +28,7 @@ export class Word {
      * - removing unsupported characters (only letters, apostrophes, hyphens, and spaces are allowed)
      * - removing multiple spaces, apostrophes, and hyphens
      * - trimming leading and trailing spaces, apostrophes, and hyphens
-     * - limiting the length to 50 characters
+     * - limiting the length to 25 characters
      */
     static normalize(word: string): string {
         word = word.normalize("NFC");
@@ -39,7 +39,7 @@ export class Word {
         word = word.replace(/-{2,}/g, '-');
         word = word.replace(/^[ '-]+|[ '-]+$/g, '');
         word = word.trim();
-        word = word.slice(0, 50);
+        word = word.slice(0, 25);
         return word;
     }
 
