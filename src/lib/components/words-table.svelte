@@ -41,7 +41,7 @@
                 </button>
             </div>
             </td>
-            <td>{word.word}</td>
+            <td class="whitespace-nowrap overflow-hidden text-ellipsis">{word.word}</td>
             <td>{word.learningPeriod}</td>
             <td>
             <div class="tooltip" data-tip="Delete word">
