@@ -41,7 +41,7 @@
 </script>
 
 <div class="join flex justify-center p-4">
-  <input type="text" placeholder="Add new word" class="input join-item" bind:value={newWord} on:keydown={handleKeydown}/>
+  <input type="text" placeholder="Add new word" class="input join-item border-base-content/5" bind:value={newWord} on:keydown={handleKeydown}/>
   <button class="btn join-item" on:click={addWord}>Add</button>
 </div>
 
