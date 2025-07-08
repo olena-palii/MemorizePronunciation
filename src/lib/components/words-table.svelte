@@ -12,15 +12,15 @@
   let { words, saveWord, deleteWord, onDoubkeClick }: Props = $props();
 </script>
 
-<div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96 w-120">
+<div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
     <div class="overflow-x-hidden h-full w-full">
-    <table class="table-sm table-pin-rows table-fixed w-full">
+    <table class="table-sm table-pin-rows table-fixed w-full max-w-xl">
         <thead class="sticky top-0 z-10 bg-base-100">
         <tr>
-            <th class="w-20">Learned</th>
+            <th class="w-16">Known</th>
             <th class="w-16">Listen</th>
             <th class="w-auto">Word</th>
-            <th class="w-24">Learning</th>
+            <th class="w-24 hidden md:table-cell">Learning</th>
             <th class="w-16">Delete</th>
         </tr>
         </thead>
@@ -40,7 +40,7 @@
                 </button>
             </td>
             <td class="whitespace-nowrap overflow-hidden text-ellipsis">{word.word}</td>
-            <td class="whitespace-nowrap overflow-hidden text-ellipsis">{word.learningPeriod}</td>
+            <td class="hidden md:table-cell whitespace-nowrap overflow-hidden text-ellipsis">{word.learningPeriod}</td>
             <td>
                 <button class="btn btn-square" aria-label="Delete word" onclick={() => deleteWord(word)}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
