@@ -12,8 +12,8 @@
   let { words, saveWord, deleteWord, onDoubkeClick }: Props = $props();
 </script>
 
-<div class="overflow-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
-    <div class="overflow-x-auto h-full w-full">
+<div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
+    <div class="overflow-x-hidden h-full w-full">
     <table class="table-sm table-pin-rows">
         <thead class="sticky top-0 z-10 bg-base-100">
         <tr>
