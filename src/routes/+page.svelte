@@ -48,10 +48,10 @@
 
   <div class="flex-col justify-center min-h-screen">
     <div class="mb-4">
-      <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord}/>
+      <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} search={newWord}/>
     </div>
     <div>
-      <WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} />
+      <WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} search={newWord}/>
     </div>
   </div>
 </div>

@@ -7,9 +7,13 @@
     saveWord: (word: Word) => any;
     deleteWord: (word: Word) => any;
     onDoubkeClick?: (word: Word) => void;
+    search?: string;
   }
 
-  let { words, saveWord, deleteWord, onDoubkeClick }: Props = $props();
+  let { words, saveWord, deleteWord, onDoubkeClick, search }: Props = $props();
+
+  let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
+
 </script>
 
 <div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
@@ -25,7 +29,7 @@
         </tr>
         </thead>
         <tbody>
-        {#each words as word (word.id)}
+        {#each filteredWords as word (word.id)}
         <tr class="hover:bg-base-300" ondblclick={() => { if (onDoubkeClick) onDoubkeClick(word); }}>
             <th>
             <label>
