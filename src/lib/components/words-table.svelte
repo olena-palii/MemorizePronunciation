@@ -1,19 +1,17 @@
-
 <script lang="ts">
-  import { Word } from "$lib";
+    import { Word } from "$lib";
 
-  interface Props {
-    words: Word[];
-    saveWord: (word: Word) => any;
-    deleteWord: (word: Word) => any;
-    onDoubkeClick?: (word: Word) => void;
-    search?: string;
-  }
+    interface Props {
+        words: Word[];
+        saveWord: (word: Word) => any;
+        deleteWord: (word: Word) => any;
+        onDoubkeClick?: (word: Word) => void;
+        search?: string;
+    }
 
-  let { words, saveWord, deleteWord, onDoubkeClick, search }: Props = $props();
+    let { words, saveWord, deleteWord, onDoubkeClick, search }: Props = $props();
 
-  let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
-
+    let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
 </script>
 
 <div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
