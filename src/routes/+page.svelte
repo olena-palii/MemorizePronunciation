@@ -18,10 +18,9 @@
   let searchValue = "";
 
   async function addWord() {
-    if(searchValue.trim()) {
-      await apiWords.saveWord(new Word({ word: searchValue }));
-      refreshTables();
-    }
+    if(!searchValue) return;
+    await apiWords.saveWord(new Word({ word: searchValue }));
+    refreshTables();
     searchValue = "";
   }
 
@@ -49,6 +48,8 @@
     </div>
   </div>
   {:else}
-    <Loader />
+    <div class="flex justify-center items-center min-h-screen"> 
+      <Loader />
+    </div>
   {/if}
 
