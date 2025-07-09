@@ -33,10 +33,10 @@
       <div class="join flex w-full max-w-xl">
         {#if stat}
           <div class="flex gap-4 p-4"  id="create-stat">
-            {#if stat.created.count > 0}<span class="text-green-500">Created: {stat.created.count}</span>{/if}
-            {#if stat.updated.count > 0}<span class="text-blue-500">Updated: {stat.updated.count}</span>{/if}
-            {#if stat.duplicates.count > 0}<span class="text-yellow-500">Duplicates: {stat.duplicates.count}</span>{/if}
-            {#if stat.skipped.count > 0}<span class="text-gray-500">Skipped: {stat.skipped.count}</span>{/if}
+            {#if stat.created.count > 0}<span class="text-green-500" id="stat-created">{stat.created.count} created</span>{/if}
+            {#if stat.updated.count > 0}<span class="text-blue-500" id="stat-updated">{stat.updated.count} updated</span>{/if}
+            {#if stat.duplicates.count > 0}<span class="text-yellow-500" id="stat-duplicated">{stat.duplicates.count} duplicated</span>{/if}
+            {#if stat.skipped.count > 0}<span class="text-gray-500" id="stat-skipped">{stat.skipped.count} skipped</span>{/if}
           </div>
         {/if}
       </div>

@@ -10,7 +10,7 @@ async function modifyWordsResponse(page, words: any[]) {
 			body: JSON.stringify(words)
 		});
 	});
-	await page.goto('/');
+	await page.reload();
 }
 
 async function createWord(page, word: string) {
@@ -41,6 +41,10 @@ async function checkWord(page, word: string) {
 // #endregion
 
 // #region Tests
+
+test.beforeEach(async ({ page }) => {
+	await page.goto('/');
+});
 
 test('home page has expected components', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
@@ -83,14 +87,12 @@ test('empty tables', async ({ page }) => {
 });
 
 test('add and delete word', async ({ page }) => {
-	await page.goto('/');
 	const word = 'new-word';
 	await createWord(page, word);
 	await deleteWord(page, word);
 });
 
 test('check and uncheck word', async ({ page }) => {
-	await page.goto('/');
 	const word = 'check-word';
 	const unknownWords = page.locator('#words-unknown table .word-row');
 	const learnedWords = page.locator('#words-learned table .word-row');
