@@ -1,17 +1,54 @@
-<h1>Memorize Pronunciation</h1>
 
-<div class="card bg-base-100 w-96 shadow-sm">
-  <figure class="px-10 pt-10">
-    <img
-      src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-      alt="Shoes"
-      class="rounded-xl" />
-  </figure>
-  <div class="card-body items-center text-center">
-    <h2 class="card-title">Card Title</h2>
-    <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-    <div class="card-actions">
-      <button class="btn btn-primary">Buy Now</button>
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { Word, apiWords, AddWord, WordsTable, Loader } from "$lib";
+  let words: Word[];
+  let wordsLearned: Word[];
+
+  async function refreshTables() {
+    const wordsLoaded = await apiWords.getWords();
+    words = wordsLoaded.filter(word => !word.isLearned);
+    wordsLearned = wordsLoaded.filter(word => word.isLearned);
+  }
+
+  onMount(async () => {
+    await refreshTables();
+  });
+
+  let searchValue = "";
+
+  async function addWord() {
+    if(searchValue.trim()) {
+      await apiWords.saveWord(new Word({ word: searchValue }));
+      refreshTables();
+    }
+    searchValue = "";
+  }
+
+  async function saveWord(word: Word) {
+    await apiWords.saveWord(word);
+    refreshTables();
+  }
+
+  async function deleteWord(word: Word) {
+    await apiWords.deleteWord(word);
+    refreshTables();
+  }
+</script>
+
+{#if words && wordsLearned}
+  <div class="flex flex-col items-center min-h-screen gap-4 p-4">
+    <AddWord bind:search={searchValue} addWord={addWord} />
+    <div class="flex-col justify-center min-h-screen">
+      <div class="mb-4" id="words-unknown">
+        <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
+      </div>
+      <div id="words-learned">
+        <WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
+      </div>
     </div>
   </div>
-</div>
+  {:else}
+    <Loader />
+  {/if}
+
