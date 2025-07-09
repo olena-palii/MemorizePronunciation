@@ -1,7 +1,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Word, apiWords, WordsTable, Loader } from "$lib";
+  import { Word, apiWords, AddWord, WordsTable, Loader } from "$lib";
   let words: Word[];
   let wordsLearned: Word[];
 
@@ -15,18 +15,14 @@
     await refreshTables();
   });
 
-  let newWord = "";
+  let searchValue = "";
 
   async function addWord() {
-    if(newWord.trim()) {
-      await apiWords.saveWord(new Word({ word: newWord }));
+    if(searchValue.trim()) {
+      await apiWords.saveWord(new Word({ word: searchValue }));
       refreshTables();
     }
-    newWord = "";
-  }
-
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Enter") addWord();
+    searchValue = "";
   }
 
   async function saveWord(word: Word) {
@@ -42,17 +38,13 @@
 
 {#if words && wordsLearned}
   <div class="flex flex-col items-center min-h-screen gap-4 p-4">
-    <div class="join flex justify-center w-full" id="add-word">
-      <input type="text" placeholder="Add new word" class="input join-item border-base-content/5" bind:value={newWord} on:keydown={handleKeydown}/>
-      <button class="btn join-item" on:click={addWord}>Add</button>
-    </div>
-
+    <AddWord bind:search={searchValue} addWord={addWord} />
     <div class="flex-col justify-center min-h-screen">
       <div class="mb-4" id="words-unknown">
-        <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} search={newWord}/>
+        <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
       </div>
       <div id="words-learned">
-        <WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} search={newWord}/>
+        <WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
       </div>
     </div>
   </div>
