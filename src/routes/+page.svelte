@@ -1,7 +1,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Word, apiWords, AddWord, WordsTable, Loader } from "$lib";
+  import { Word, apiWords, AddWord, WordsTable } from "$lib";
   let words: Word[];
   let wordsLearned: Word[];
 
@@ -49,7 +49,7 @@
   </div>
   {:else}
     <div class="flex justify-center items-center min-h-screen"> 
-      <Loader />
+      <span class="loading loading-spinner loading-xl"></span>
     </div>
   {/if}
 
