@@ -4,21 +4,23 @@
 
     interface Props {
         word: Word;
+        next: () => any;
+        previous: () => any;
     }
 
-    let { word = $bindable()}: Props = $props();
+    let { word = $bindable(), next, previous}: Props = $props();
 </script>
 
 <div class="card w-96 bg-base-100 shadow-sm">
   <div class="card-body">
     <div class="flex justify-between">
-      <button aria-label="Previous" class="btn btn-square btn-sm">
+      <button aria-label="Previous" class="btn btn-square btn-sm" onclick={previous}>
         <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <h2 class="text-xl font-bold">{word.word}</h2>
-      <button aria-label="Next" class="btn btn-square btn-sm">
+      <button aria-label="Next" class="btn btn-square btn-sm" onclick={next}>
         <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
