@@ -5,6 +5,10 @@
   let words: Word[] = [];
   let selectedWord: Word;
 
+  function selectWord(word: Word) {
+    selectedWord = word;
+  }
+
   async function refreshTable() {
     words = await apiWords.getWords();
   }
@@ -46,7 +50,7 @@
           <Card bind:word={selectedWord} next={nextWord} previous={previousWord}/>
         </div>
         <div>
-          <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord}/>
+          <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} onDoubkeClick={selectWord}/>
         </div>
     </div>
   </div>
