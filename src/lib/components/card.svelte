@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { Word } from "$lib";
     import { playNativeAudio } from "$lib";
 
@@ -9,6 +10,22 @@
     }
 
     let { word = $bindable(), next, previous}: Props = $props();
+
+    function handleKeydown(event: KeyboardEvent) {
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            next();
+        }
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            previous();
+        }
+    }
+
+    onMount(() => {
+        document.addEventListener('keydown', handleKeydown);
+        return () => { document.removeEventListener('keydown', handleKeydown); };
+    });
 </script>
 
 <div class="card w-96 bg-base-100 shadow-sm">
