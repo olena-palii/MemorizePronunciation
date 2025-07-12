@@ -26,19 +26,40 @@
 
   let recording = $state<boolean>(false);
   let recordedWord = $state<Word | null>(null);
+  let timerInSeconds = $state<string>("0.00");
+  let progress = $state<number>(0);
 
   async function record() {
+    timerInSeconds = "0.00";
+    progress = 0;
     recording = true;
     await startRecordingAudio();
-    setTimeout(async () => {
-      await stop();
-    }, 5000);
+    timer(5000);
   }
 
-  async function stop() {
-    await stopRecordingAudio();
+  function timer(duration: number) {
+    let elapsed = 0;
+    const interval = 50;
+
+    const timer = setInterval(() => {
+      elapsed += interval;
+      timerInSeconds = `${(elapsed / 1000).toFixed(2)}`;
+      progress = Math.min((elapsed / duration) * 100, 100);
+      if (elapsed >= duration || !recording) {
+        clearInterval(timer);
+        stop();
+      }
+    }, interval);
+  }
+
+  function stop() {
+    stopRecordingAudio();
     recording = false;
     recordedWord = word;
+  }
+
+  function play() {
+    if (!recording) playRecordedAudio();
   }
 
   function isRecorded(): boolean {
@@ -81,7 +102,7 @@
       else record();
     }
     if (event.key === "p" || event.key === "P") {
-      if (isRecorded()) playRecordedAudio();
+      play();
     }
   }
 </script>
@@ -96,11 +117,10 @@
         </svg>
       </button>
       {#if recording}
-        <button class="stop btn btn-circle btn-error btn-xl" aria-label="Stop recording" onclick={stop}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" />
-          </svg>
-        </button>
+        <div class="relative inline-flex items-center justify-center" style="width: 3.5rem; height: 3.5rem;">
+          <div class="radial-progress pointer-events-none" style="--value: {progress}; --size: 3.5rem; --thickness: 0.5rem;" aria-valuenow="{progress}" role="progressbar"></div>
+          <button class="absolute btn btn-circle btn-error" aria-label="Stop recording" onclick={stop}>{timerInSeconds}</button>
+        </div>
       {:else}
         <button class="record btn btn-circle btn-info btn-xl" aria-label="Record your pronunciation" onclick={record}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -108,7 +128,7 @@
           </svg>
         </button>
       {/if}
-      <button class="play btn btn-circle btn-info btn-xl" aria-label="Play recorded pronunciation" onclick={ () => playRecordedAudio() } disabled={!isRecorded()}>
+      <button class="play btn btn-circle btn-info btn-xl" aria-label="Play recorded pronunciation" onclick={play} disabled={!isRecorded()}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
         </svg>

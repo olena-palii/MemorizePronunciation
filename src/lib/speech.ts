@@ -24,19 +24,14 @@ export async function startRecordingAudio() {
     isRecording = true;
 }
 
-export function stopRecordingAudio(): Promise<Blob> {
-    return new Promise((resolve) => {
-        if (!mediaRecorder || !isRecording) return;
-
-        mediaRecorder.onstop = () => {
-            mediaStream.getTracks().forEach(track => track.stop());
-            const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-            recordedChunks = [];
-            recorded = blob;
-            resolve(blob);
-        };
-        mediaRecorder.stop();
-    });
+export function stopRecordingAudio() {
+    mediaRecorder.onstop = () => {
+        mediaStream.getTracks().forEach(track => track.stop());
+        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        recordedChunks = [];
+        recorded = blob;
+    };
+    mediaRecorder.stop();
 }
 
 export function playRecordedAudio() {
