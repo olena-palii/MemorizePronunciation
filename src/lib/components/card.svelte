@@ -17,17 +17,6 @@
 
   let { word = $bindable(), next, previous, updateWord }: Props = $props();
 
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      event.preventDefault();
-      next();
-    }
-    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-      event.preventDefault();
-      previous();
-    }
-  }
-
   onMount(() => {
     document.addEventListener("keydown", handleKeydown);
     return () => {
@@ -41,7 +30,9 @@
   async function record() {
     recording = true;
     await startRecordingAudio();
-    setTimeout(async () => { await stop(); }, 5000);
+    setTimeout(async () => {
+      await stop();
+    }, 5000);
   }
 
   async function stop() {
@@ -51,7 +42,7 @@
   }
 
   function isRecorded(): boolean {
-    if(!recordedWord) return false;
+    if (!recordedWord) return false;
     if (recordedWord.id !== word.id) return false;
     return true;
   }
@@ -66,6 +57,32 @@
     word.resetLearning();
     updateWord(word);
     next();
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      next();
+    }
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      previous();
+    }
+    if (event.key === "Enter") {
+      if (word.isLearned) resetLearning();
+      else markAsLearned();
+    }
+    if (event.key === " ") {
+      event.preventDefault();
+      textToSpeech(word.word);
+    }
+    if (event.key === "r" || event.key === "R") {
+      if (recording) stop();
+      else record();
+    }
+    if (event.key === "p" || event.key === "P") {
+      if (isRecorded()) playRecordedAudio();
+    }
   }
 </script>
 
@@ -97,7 +114,7 @@
         </svg>
       </button>
     </div>
-    <div class="flex join mt-4 justify-center">
+    <div class="card-navigation flex join mt-4 justify-center">
       <button aria-label="Previous" class="btn join-item w-20" onclick={previous}>
         <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -115,6 +132,16 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
+    </div>
+    <div class="card-tips flex join mt-4 justify-center hidden lg:flex">
+        <kbd class="kbd tooltip" data-tip="Previous word">↑</kbd>
+        <kbd class="kbd tooltip" data-tip="Next word">↓</kbd>
+        <kbd class="kbd tooltip" data-tip="Previous word">←</kbd>
+        <kbd class="kbd tooltip" data-tip="Next word">→</kbd>
+        <kbd class="kbd tooltip" data-tip="Listen to pronunciation">Space</kbd>
+        <kbd class="kbd tooltip" data-tip="Start recording. Stop recording">R</kbd>
+        <kbd class="kbd tooltip" data-tip="Play recorded pronunciation">P</kbd>
+        <kbd class="kbd tooltip" data-tip="Mark as known. Reset learning">Enter</kbd>
     </div>
   </div>
 </div>
