@@ -2,7 +2,7 @@
   import '../app.css';
 </script>
 
-<div class="navbar bg-base-100 shadow-sm">
+<div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50">
   <div class="flex-1">
     <a href="/" class="btn btn-ghost text-xl">Memorize Pronunciation</a>
   </div>
@@ -59,4 +59,5 @@
   </a>
 </div>
 
+<div class="pt-16"></div>
 <slot />

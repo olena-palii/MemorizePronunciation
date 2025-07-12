@@ -1,7 +1,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Word, apiWords, AddWord, WordsTable, Loader } from "$lib";
+  import { Word, apiWords, AddWord, WordsTable } from "$lib";
   let words: Word[];
   let wordsLearned: Word[];
 
@@ -40,16 +40,16 @@
     <AddWord bind:search={searchValue} addWord={addWord} />
     <div class="flex-col justify-center min-h-screen">
       <div class="mb-4" id="words-unknown">
-        <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
+        <WordsTable bind:words={words} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
       </div>
       <div id="words-learned">
-        <WordsTable words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
+        <WordsTable bind:words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
       </div>
     </div>
   </div>
   {:else}
     <div class="flex justify-center items-center min-h-screen"> 
-      <Loader />
+      <span class="loading loading-spinner loading-xl"></span>
     </div>
   {/if}
 

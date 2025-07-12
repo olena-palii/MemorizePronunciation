@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Word, apiWords, Loader } from "$lib";
+  import { Word, apiWords } from "$lib";
   import type { SaveStatisticsDto } from "$lib";
 
   let text = "";
@@ -27,7 +27,7 @@
 <form class="flex flex-col items-center min-h-screen gap-4 p-4" id="create-words" onsubmit={saveWords}>
   <textarea class="textarea w-full max-w-xl" rows="12" placeholder="Enter words, one per line" bind:value={text}></textarea>
   {#if saving}
-    <Loader />
+    <span class="loading loading-spinner loading-xl"></span>
   {:else}
       <button type="submit" class="btn btn-success flex w-full max-w-xl">Create words</button>
       <div class="join flex w-full max-w-xl">
