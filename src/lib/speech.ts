@@ -3,3 +3,36 @@ export function playNativeAudio(text: string) {
     utterance.lang = 'en-US';
     window.speechSynthesis.speak(utterance);
 }
+
+let mediaRecorder: MediaRecorder;
+let recordedChunks: Blob[] = [];
+
+export async function startRecordingAudio() {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  mediaRecorder = new MediaRecorder(stream);
+
+  mediaRecorder.ondataavailable = (e) => {
+    if (e.data.size > 0) {
+      recordedChunks.push(e.data);
+    }
+  };
+
+  mediaRecorder.start();
+}
+
+export function stopRecordingAudio(): Promise<Blob> {
+  return new Promise((resolve) => {
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      recordedChunks = [];
+      resolve(blob);
+    };
+    mediaRecorder.stop();
+  });
+}
+
+export function playRecordedAudio(blob: Blob) {
+  const audioURL = URL.createObjectURL(blob);
+  const audio = new Audio(audioURL);
+  audio.play();
+}
