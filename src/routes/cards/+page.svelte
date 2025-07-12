@@ -12,7 +12,7 @@
   async function refreshTable() {
     words = await apiWords.getWords();
   }
-
+  
   onMount(async () => {
     await refreshTable();
     selectedWord = words[0] || new Word({ word: "N/A" });
@@ -46,11 +46,13 @@
 {#if words && selectedWord}
   <div class="flex flex-col items-center min-h-screen gap-4 p-4">
     <div class="flex-col min-h-screen gap-4 p-4">
-        <div class="flex justify-center mb-4">
+        <div class="flex justify-center mb-4 fixed top-24 left-0 w-full z-40">
           <Card bind:word={selectedWord} next={nextWord} previous={previousWord}/>
         </div>
-        <div>
-          <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} onDoubkeClick={selectWord}/>
+        <div class="pt-40 fixed top-50 left-0 w-full z-40">
+          <div class="flex justify-center items-center">
+            <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} onDoubkeClick={selectWord} bind:selected={selectedWord}/>
+          </div>
         </div>
     </div>
   </div>

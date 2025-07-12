@@ -8,11 +8,19 @@
         deleteWord: (word: Word) => any;
         onDoubkeClick?: (word: Word) => void;
         search?: string;
+        selected?: Word;
     }
 
-    let { words, saveWord, deleteWord, onDoubkeClick, search }: Props = $props();
+    let { words, saveWord, deleteWord, onDoubkeClick, search, selected = $bindable() }: Props = $props();
 
     let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
+
+    $effect(() => {
+        if (selected && filteredWords.includes(selected)) {
+            const row = document.querySelector(`.word-row[data-id="${selected.id}"]`);
+            row?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    });
 </script>
 
 <div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
@@ -29,7 +37,7 @@
         </thead>
         <tbody>
         {#each filteredWords as word (word.id)}
-        <tr class="word-row hover:bg-base-300" ondblclick={() => { if (onDoubkeClick) onDoubkeClick(word); }}>
+        <tr data-id="{word.id}" class="word-row hover:bg-base-300 {word.id === selected?.id ? 'bg-base-300' : ''}" ondblclick={() => { if (onDoubkeClick) onDoubkeClick(word); }}>
             <th>
             <label>
                 <input type="checkbox" class="word-checkbox checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; saveWord(word); }} />
