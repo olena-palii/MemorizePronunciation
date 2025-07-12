@@ -12,10 +12,14 @@
   async function refreshTable() {
     words = await apiWords.getWords();
   }
+
+  function selectFirstWord() {
+    selectedWord = words[0] || new Word({ word: "N/A" });
+  }
   
   onMount(async () => {
     await refreshTable();
-    selectedWord = words[0] || new Word({ word: "N/A" });
+    selectFirstWord();
   });
 
   async function saveWord(word: Word) {
@@ -25,7 +29,10 @@
 
   async function deleteWord(word: Word) {
     await apiWords.deleteWord(word);
-    refreshTable();
+    words = words.filter(w => w.id !== word.id);
+    if (selectedWord && selectedWord.id === word.id) {
+      selectFirstWord();
+    }
   }
 
   function nextWord() {
