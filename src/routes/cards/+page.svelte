@@ -15,7 +15,7 @@
   }
 
   function selectFirstWord() {
-    selectedWord = words[0] || new Word({ word: "N/A" });
+    selectedWord = words[0] || new Word({ word: "word" });
   }
   
   onMount(async () => {
