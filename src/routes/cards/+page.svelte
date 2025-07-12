@@ -30,11 +30,10 @@
 
   async function deleteWord(word: Word) {
     const stat: DeleteStatisticsDto = await apiWords.deleteWord(word);
-    if (stat.deleted === 1) {
-      words = words.filter((w) => w.id !== word.id);
-      if (selectedWord && selectedWord.id === word.id) {
-        selectFirstWord();
-      }
+    if (stat.deleted === 0) return;
+    words = words.filter((w) => w.id !== word.id);
+    if (selectedWord && selectedWord.id === word.id) {
+      selectFirstWord();
     }
   }
 
