@@ -2,6 +2,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Word, apiWords, WordsTable, Card } from "$lib";
+  import type { DeleteStatisticsDto } from "$lib";
   let words: Word[] = [];
   let selectedWord: Word;
 
@@ -28,10 +29,12 @@
   }
 
   async function deleteWord(word: Word) {
-    await apiWords.deleteWord(word);
-    words = words.filter(w => w.id !== word.id);
-    if (selectedWord && selectedWord.id === word.id) {
-      selectFirstWord();
+    const stat: DeleteStatisticsDto = await apiWords.deleteWord(word);
+    if (stat.deleted === 1) {
+      words = words.filter((w) => w.id !== word.id);
+      if (selectedWord && selectedWord.id === word.id) {
+        selectFirstWord();
+      }
     }
   }
 
