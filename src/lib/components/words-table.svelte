@@ -11,7 +11,7 @@
         selected?: Word;
     }
 
-    let { words, saveWord, deleteWord, onDoubkeClick, search, selected = $bindable() }: Props = $props();
+    let { words = $bindable(), saveWord, deleteWord, onDoubkeClick, search, selected = $bindable() }: Props = $props();
 
     let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
 

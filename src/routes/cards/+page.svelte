@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Word, apiWords, WordsTable, Card } from "$lib";
-  import type { DeleteStatisticsDto } from "$lib";
+  import type { SaveStatisticsDto, DeleteStatisticsDto } from "$lib";
   let words: Word[] = [];
   let selectedWord: Word;
 
@@ -23,9 +23,14 @@
     selectFirstWord();
   });
 
-  async function saveWord(word: Word) {
-    await apiWords.saveWord(word);
-    refreshTable();
+  async function updateWord(word: Word) {
+    const stat: SaveStatisticsDto = await apiWords.saveWord(word);
+    if (stat.updated.count === 0) return;
+    const index = words.findIndex((w) => w.id === word.id);
+    if (index !== -1) words[index] = word;
+    if (selectedWord && selectedWord.id === word.id) {
+      selectedWord = word;
+    }
   }
 
   async function deleteWord(word: Word) {
@@ -55,12 +60,12 @@
 {#if words && selectedWord}
   <div class="flex flex-col items-center min-h-screen gap-4 p-4">
     <div class="flex-col min-h-screen gap-4 p-4">
-        <div class="flex justify-center mb-4 fixed top-24 left-0 w-full z-40">
-          <Card bind:word={selectedWord} next={nextWord} previous={previousWord}/>
+        <div class="flex justify-center mb-4 fixed top-24 left-0 w-full z-50">
+          <Card bind:word={selectedWord} next={nextWord} previous={previousWord} updateWord={updateWord}/>
         </div>
         <div class="pt-40 fixed top-50 left-0 w-full z-40">
           <div class="flex justify-center items-center">
-            <WordsTable words={words} saveWord={saveWord} deleteWord={deleteWord} onDoubkeClick={selectWord} bind:selected={selectedWord}/>
+            <WordsTable bind:words={words} saveWord={updateWord} deleteWord={deleteWord} onDoubkeClick={selectWord} bind:selected={selectedWord}/>
           </div>
         </div>
     </div>

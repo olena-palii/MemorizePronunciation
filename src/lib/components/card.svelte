@@ -7,9 +7,10 @@
         word: Word;
         next: () => any;
         previous: () => any;
+        updateWord: (word: Word) => any;
     }
 
-    let { word = $bindable(), next, previous}: Props = $props();
+    let { word = $bindable(), next, previous, updateWord}: Props = $props();
 
     function handleKeydown(event: KeyboardEvent) {
         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
@@ -26,23 +27,22 @@
         document.addEventListener('keydown', handleKeydown);
         return () => { document.removeEventListener('keydown', handleKeydown); };
     });
+
+    async function markAsLearned() {
+        word.markAsLearned();
+        updateWord(word);
+        next();
+    }
+
+    async function resetLearning() {
+        word.resetLearning();
+        updateWord(word);
+    }
 </script>
 
 <div class="card w-96 bg-base-100 shadow-sm">
   <div class="card-body">
-    <div class="flex justify-between">
-      <button aria-label="Previous" class="btn btn-square btn-sm" onclick={previous}>
-        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <h2 class="text-xl font-bold">{word.word}</h2>
-      <button aria-label="Next" class="btn btn-square btn-sm" onclick={next}>
-        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-    </div>
+    <h2 class="flex text-xl font-bold justify-center">{word.word}</h2>
     <div class="flex justify-center gap-8 mt-8">
       <button class="btn btn-circle btn-success btn-xl" aria-label="Listen to pronunciation" onclick={() => playNativeAudio(word.word)}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -60,12 +60,24 @@
         </svg>
       </button>
     </div>
-    <div class="mt-6">
-      {#if word.isLearned}
-        <button class="btn btn-block btn-error">Reset learning</button>
-      {:else}
-        <button class="btn btn-block btn-success">Mark as known</button>
-      {/if}
+    <div class="flex join mt-4 justify-center">
+      <button aria-label="Previous" class="btn join-item w-20" onclick={previous}>
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <div>
+        {#if word.isLearned}
+          <button class="btn join-item btn-error w-48" onclick={resetLearning}>Reset learning</button>
+        {:else}
+          <button class="btn join-item btn-success w-48" onclick={markAsLearned}>Mark as known</button>
+        {/if}
+      </div>
+      <button aria-label="Next" class="btn join-item w-20" onclick={next}>
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   </div>
 </div>
