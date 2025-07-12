@@ -1,0 +1,375 @@
+import { expect, test } from '@playwright/test';
+
+// #region Mocking
+
+// Add spy flags for on audio and TTS calls
+declare global {
+	interface Window {
+		__audioWasPlayed?: boolean;
+		__ttsCalled?: boolean;
+	}
+}
+
+async function addSpyFlagsForAudioPlay(page) {
+	// Spy that audio playing was triggered
+	await page.addInitScript(() => {
+		window.__audioWasPlayed = false;
+		Audio.prototype.play = function () {
+			window.__audioWasPlayed = true;
+			return Promise.resolve();
+		};
+	});
+	// Spy that text-to-speech was called
+	await page.addInitScript(() => {
+		window.__ttsCalled = false;
+		window.speechSynthesis.speak = function (utterance) {
+			window.__ttsCalled = true;
+		};
+	});
+}
+
+async function mockAudioRecording(page) {
+	await page.addInitScript(() => {
+		navigator.mediaDevices.getUserMedia = async () => {
+			const canvas = document.createElement('canvas');
+			const stream = canvas.captureStream();
+			const audioContext = new AudioContext();
+			const oscillator = audioContext.createOscillator();
+			const dest = audioContext.createMediaStreamDestination();
+			oscillator.connect(dest);
+			oscillator.start();
+			stream.addTrack(dest.stream.getAudioTracks()[0]);
+			return stream;
+		};
+	});
+}
+
+const customWords = [{ "id": 202, "word": "unknown-one", "created": "2025-07-12T19:39:22.660Z", "learned": null }, { "id": 201, "word": "unknown-two", "created": "2025-07-12T19:39:13.494Z", "learned": null }, { "id": 197, "word": "learned-one", "created": "2025-07-12T19:38:39.936Z", "learned": "2025-07-12T19:38:55.849Z" }, { "id": 198, "word": "learned-two", "created": "2025-07-12T19:38:44.915Z", "learned": "2025-07-12T19:38:55.512Z" }];
+
+async function mockWordsAPI(page) {
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			body: JSON.stringify(customWords)
+		});
+	});
+}
+
+async function mockMarkAsKnownAPI(page) {
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 202, "word": "unknown-one", "created": "2025-07-12T19:39:22.660Z", "learned": "2025-07-12T22:07:06.600Z" }] }, "duplicates": { "count": 0, "words": [] }, "skipped": { "count": 0 } })
+		});
+	});
+}
+
+async function mockResetLearningAPI(page) {
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 197, "word": "learned-one", "created": "2025-07-12T19:38:39.936Z", "learned": null }] }, "duplicates": { "count": 0, "words": [] }, "skipped": { "count": 0 } })
+		});
+	});
+}
+
+// #endregion
+
+// #region Tests
+
+test.beforeEach(async ({ page, context }) => {
+	await mockWordsAPI(page);
+	await context.grantPermissions(['microphone']);
+	await mockAudioRecording(page);
+	await addSpyFlagsForAudioPlay(page);
+	await page.goto('/cards');
+});
+
+test('cards page has expected components', async ({ page }) => {
+	await expect(page.locator('#word-card')).toBeVisible();
+	await expect(page.locator('#words-all')).toBeVisible();
+});
+
+test('empty table', async ({ page }) => {
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			body: JSON.stringify([])
+		});
+	});
+	await page.reload();
+	await expect(page.locator('#word-card h2')).toHaveText("word");
+});
+
+test('default card', async ({ page }) => {
+	await expect(page.locator('#word-card h2')).toHaveText("unknown-one");
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation.getByRole('button', { name: 'Listen to pronunciation' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeDisabled();
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Next word' })).toBeEnabled();
+	await expect(cardNavigation.getByRole('button', { name: 'Previous word' })).toBeEnabled();
+	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).toBeEnabled();
+	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).not.toBeVisible();
+});
+
+test('select unknown card', async ({ page }) => {
+	await page.locator('#words-all').getByRole('row', { name: 'learned-one' }).dblclick();
+	await expect(page.locator('#word-card h2')).toHaveText("learned-one");
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation.getByRole('button', { name: 'Listen to pronunciation' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeDisabled();
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Next word' })).toBeEnabled();
+	await expect(cardNavigation.getByRole('button', { name: 'Previous word' })).toBeEnabled();
+	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).not.toBeVisible();
+	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).toBeEnabled();
+});
+
+test('cards navigation using next and previous buttons', async ({ page }) => {
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText("unknown-one");
+	const buttonNext = page.locator('#word-card .card-navigation').getByRole('button', { name: 'Next word' });
+	await buttonNext.click();
+	await expect(cardTitle).toHaveText("unknown-two");
+	await buttonNext.click();
+	await expect(cardTitle).toHaveText("learned-one");
+	await buttonNext.click();
+	await expect(cardTitle).toHaveText("learned-two");
+	await buttonNext.click();
+	await expect(cardTitle).toHaveText("learned-two");
+	const buttonPrevious = page.locator('#word-card .card-navigation').getByRole('button', { name: 'Previous word' });
+	await buttonPrevious.click();
+	await expect(cardTitle).toHaveText("learned-one");
+	await buttonPrevious.click();
+	await expect(cardTitle).toHaveText("unknown-two");
+	await buttonPrevious.click();
+	await expect(cardTitle).toHaveText("unknown-one");
+	await buttonPrevious.click();
+	await expect(cardTitle).toHaveText("unknown-one");
+});
+
+test('cards navigation using arrows on keyboard', async ({ page }) => {
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText("unknown-one");
+	await page.keyboard.press('ArrowRight');
+	await expect(cardTitle).toHaveText("unknown-two");
+	await page.keyboard.press('ArrowDown');
+	await expect(cardTitle).toHaveText("learned-one");
+	await page.keyboard.press('ArrowRight');
+	await expect(cardTitle).toHaveText("learned-two");
+	await page.keyboard.press('ArrowDown');
+	await expect(cardTitle).toHaveText("learned-two");
+	await page.keyboard.press('ArrowLeft');
+	await expect(cardTitle).toHaveText("learned-one");
+	await page.keyboard.press('ArrowUp');
+	await expect(cardTitle).toHaveText("unknown-two");
+	await page.keyboard.press('ArrowLeft');
+	await expect(cardTitle).toHaveText("unknown-one");
+	await page.keyboard.press('ArrowUp');
+	await expect(cardTitle).toHaveText("unknown-one");
+});
+
+test('recording pronunciation using record buttons', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await cardPronunciation.getByRole('button', { name: 'Start recording' }).click();
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toBeEnabled();
+	await page.waitForTimeout(100);
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toHaveText('0.10');
+	await cardPronunciation.getByRole('button', { name: 'Stop recording' }).click();
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
+});
+
+test('recording pronunciation using R on keyboard', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation).toBeVisible();
+	await page.keyboard.press('R');
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toBeEnabled();
+	await page.waitForTimeout(100);
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toHaveText('0.10');
+	await page.keyboard.press('R');
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
+});
+
+test('recorded pronunciation is binded to word', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation).toBeVisible();
+	await page.keyboard.press('R');
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toBeEnabled();
+	await page.waitForTimeout(100);
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toHaveText('0.10');
+	await page.keyboard.press('R');
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
+	await page.keyboard.press('ArrowDown');
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeDisabled();
+	await page.keyboard.press('ArrowUp');
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
+});
+
+test('recording stops after 5 seconds', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation).toBeVisible();
+	await page.keyboard.press('R');
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toBeEnabled();
+	await page.waitForTimeout(4900);
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toHaveText('4.90');
+	await page.waitForTimeout(100);
+	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
+	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
+});
+
+test('play recorded audio using play button', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation).toBeVisible();
+	await page.keyboard.press('R');
+	await page.waitForTimeout(100);
+	await page.keyboard.press('R');
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
+	// Reset the flag and add a small delay
+	await page.evaluate(() => window.__audioWasPlayed = false);
+	await page.waitForTimeout(50);
+	// Play recorded audio
+	await cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' }).click();
+	// Wait for the spy flag to be updated
+	await page.waitForFunction(() => window.__audioWasPlayed === true, {
+		timeout: 5000
+	});
+	const isAudioPlaying = await page.evaluate(() => window.__audioWasPlayed);
+	expect(isAudioPlaying).toBeTruthy();
+});
+
+test('play recorded audio using P on keyboard', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation).toBeVisible();
+	await page.keyboard.press('R');
+	await page.waitForTimeout(100);
+	await page.keyboard.press('R');
+	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
+	// Reset the flag and add a small delay
+	await page.evaluate(() => window.__audioWasPlayed = false);
+	await page.waitForTimeout(50);
+	// Play recorded audio
+	await page.keyboard.press('P');
+	// Wait for the spy flag to be updated
+	await page.waitForFunction(() => window.__audioWasPlayed === true, {
+		timeout: 5000
+	});
+	const isAudioPlaying = await page.evaluate(() => window.__audioWasPlayed);
+	expect(isAudioPlaying).toBeTruthy();
+});
+
+test('listen to pronunciation using listen button', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation).toBeVisible();
+	await cardPronunciation.getByRole('button', { name: 'Listen to pronunciation' }).click()
+	const isTtsCalled = await page.evaluate(() => window.__ttsCalled);
+	expect(isTtsCalled).toBeTruthy();
+});
+
+test('listen to pronunciation using Space on keyboard', async ({ page }) => {
+	const cardPronunciation = page.locator('#word-card .card-pronunciation');
+	await expect(cardPronunciation).toBeVisible();
+	await page.keyboard.press('Space');
+	const isTTScalled = await page.evaluate(() => window.__ttsCalled);
+	expect(isTTScalled).toBeTruthy();
+});
+
+test('mark as known on card', async ({ page }) => {
+	const word = "unknown-one";
+	const wordNext = "unknown-two";
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText(word);
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).toBeEnabled();
+	await mockMarkAsKnownAPI(page);
+	await cardNavigation.getByRole('button', { name: 'Mark as known' }).click();
+	await expect(cardTitle).toHaveText(wordNext);
+	const wordsAll = page.locator('#words-all table .word-row');
+	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).toBeChecked();
+});
+
+test('mark as known using Enter on keyboard', async ({ page }) => {
+	const word = "unknown-one";
+	const wordNext = "unknown-two";
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText(word);
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).toBeEnabled();
+	await mockMarkAsKnownAPI(page);
+	await page.keyboard.press('Enter');
+	await expect(cardTitle).toHaveText(wordNext);
+	const wordsAll = page.locator('#words-all table .word-row');
+	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).toBeChecked();
+});
+
+test('mark as known on table', async ({ page }) => {
+	const word = "unknown-one";
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText(word);
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).toBeEnabled();
+	await mockMarkAsKnownAPI(page);
+	const wordsAll = page.locator('#words-all table .word-row');
+	wordsAll.filter({ hasText: word }).locator("input.checkbox").click();
+	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).toBeChecked();
+	await expect(cardTitle).toHaveText(word);
+	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).toBeEnabled();
+});
+
+test('reset learning on card', async ({ page }) => {
+	const word = "learned-one";
+	const wordNext = "learned-two";
+	await page.locator('#words-all').getByRole('row', { name: word }).dblclick();
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText(word);
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).toBeEnabled();
+	await mockResetLearningAPI(page);
+	await cardNavigation.getByRole('button', { name: 'Reset learning' }).click();
+	await expect(cardTitle).toHaveText(wordNext);
+	const wordsAll = page.locator('#words-all table .word-row');
+	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).not.toBeChecked();
+});
+
+test('reset learning using Enter on keyboard', async ({ page }) => {
+	const word = "learned-one";
+	const wordNext = "learned-two";
+	await page.locator('#words-all').getByRole('row', { name: word }).dblclick();
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText(word);
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).toBeEnabled();
+	await mockResetLearningAPI(page);
+	await page.keyboard.press('Enter');
+	await expect(cardTitle).toHaveText(wordNext);
+	const wordsAll = page.locator('#words-all table .word-row');
+	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).not.toBeChecked();
+});
+
+test('reset learning on table', async ({ page }) => {
+	const word = "learned-one";
+	await page.locator('#words-all').getByRole('row', { name: word }).dblclick();
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText(word);
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).toBeEnabled();
+	await mockResetLearningAPI(page);
+	const wordsAll = page.locator('#words-all table .word-row');
+	wordsAll.filter({ hasText: word }).locator("input.checkbox").click();
+	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).not.toBeChecked();
+	await expect(cardTitle).toHaveText(word);
+	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).toBeEnabled();
+});
+
+// #endregion
