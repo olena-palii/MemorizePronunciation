@@ -37,6 +37,7 @@
     async function resetLearning() {
         word.resetLearning();
         updateWord(word);
+        next();
     }
 </script>
 
