@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { Word } from "$lib";
   import {
-    playNativeAudio,
+    textToSpeech,
     startRecordingAudio,
     stopRecordingAudio,
     playRecordedAudio,
@@ -37,16 +37,15 @@
 
   let recording = $state<boolean>(false);
   let recordedWord = $state<Word | null>(null);
-  let recordedAudio: Blob;
 
   async function record() {
     recording = true;
     await startRecordingAudio();
-    setTimeout(() => { stop(); }, 10000);
+    setTimeout(async () => { await stop(); }, 5000);
   }
 
   async function stop() {
-    recordedAudio = await stopRecordingAudio();
+    await stopRecordingAudio();
     recording = false;
     recordedWord = word;
   }
@@ -74,7 +73,7 @@
   <div class="card-body">
     <h2 class="flex text-xl font-bold justify-center">{word.word}</h2>
     <div class="flex justify-center gap-8 mt-8">
-      <button class="listen btn btn-circle btn-success btn-xl" aria-label="Listen to pronunciation" onclick={() => playNativeAudio(word.word)}>
+      <button class="listen btn btn-circle btn-success btn-xl" aria-label="Listen to pronunciation" onclick={() => textToSpeech(word.word)}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
         </svg>
@@ -92,7 +91,7 @@
           </svg>
         </button>
       {/if}
-      <button class="play btn btn-circle btn-info btn-xl" aria-label="Play recorded pronunciation" onclick={ () => playRecordedAudio(recordedAudio) } disabled={!isRecorded()}>
+      <button class="play btn btn-circle btn-info btn-xl" aria-label="Play recorded pronunciation" onclick={ () => playRecordedAudio() } disabled={!isRecorded()}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
         </svg>
