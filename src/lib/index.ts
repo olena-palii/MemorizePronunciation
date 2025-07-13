@@ -6,3 +6,4 @@ export { textToSpeech, startRecordingAudio, stopRecordingAudio, playRecordedAudi
 export { default as WordsTable } from './components/words-table.svelte';
 export { default as Card } from './components/card.svelte';
 export { default as AddWord } from './components/add-word.svelte';
+export { default as Theme } from './components/theme.svelte';

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // #region Mocking
 
-// Add spy flags for on audio and TTS calls
+// Add spy flags for audio and TTS calls
 declare global {
 	interface Window {
 		__audioWasPlayed?: boolean;
@@ -11,7 +11,6 @@ declare global {
 }
 
 async function addSpyFlagsForAudioPlay(page) {
-	// Spy that audio playing was triggered
 	await page.addInitScript(() => {
 		window.__audioWasPlayed = false;
 		Audio.prototype.play = function () {
@@ -19,7 +18,9 @@ async function addSpyFlagsForAudioPlay(page) {
 			return Promise.resolve();
 		};
 	});
-	// Spy that text-to-speech was called
+}
+
+async function addSpyFlagsForTTScall(page) {
 	await page.addInitScript(() => {
 		window.__ttsCalled = false;
 		window.speechSynthesis.speak = function (utterance) {
@@ -79,6 +80,7 @@ test.beforeEach(async ({ page, context }) => {
 	await context.grantPermissions(['microphone']);
 	await mockAudioRecording(page);
 	await addSpyFlagsForAudioPlay(page);
+	await addSpyFlagsForTTScall(page);
 	await page.goto('/cards');
 });
 
