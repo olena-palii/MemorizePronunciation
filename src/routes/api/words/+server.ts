@@ -1,3 +1,6 @@
+// Copyright 2025 Olena Palii
+// SPDX-License-Identifier: Apache-2.0
+
 import type { WordDto } from '$lib';
 import * as dbWords from '$lib/database/db-words';
 

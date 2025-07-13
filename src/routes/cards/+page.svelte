@@ -1,4 +1,6 @@
-
+<!-- Copyright 2025 Olena Palii -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+ 
 <script lang="ts">
   import { onMount } from "svelte";
   import { Word, apiWords, WordsTable, Card } from "$lib";

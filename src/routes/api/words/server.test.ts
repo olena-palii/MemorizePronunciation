@@ -1,3 +1,6 @@
+// Copyright 2025 Olena Palii
+// SPDX-License-Identifier: Apache-2.0
+
 import { test, expect, afterAll } from 'vitest';
 import * as api from './+server';
 import { Word } from '$lib';

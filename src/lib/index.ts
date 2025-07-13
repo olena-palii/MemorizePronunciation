@@ -1,3 +1,6 @@
+// Copyright 2025 Olena Palii
+// SPDX-License-Identifier: Apache-2.0
+
 // place files you want to import through the `$lib` alias in this folder.
 export { Word } from "./word";
 export type { WordDto, SaveStatisticsDto, DeleteStatisticsDto } from "./dto";

@@ -1,3 +1,6 @@
+<!-- Copyright 2025 Olena Palii -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+ 
 <script lang="ts">
   import '../app.css';
   import { Theme } from '$lib'

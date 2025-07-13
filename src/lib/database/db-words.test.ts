@@ -1,3 +1,6 @@
+// Copyright 2025 Olena Palii
+// SPDX-License-Identifier: Apache-2.0
+
 import { test, expect, beforeEach, afterEach, vi } from 'vitest';
 import type { WordDto } from '$lib';
 import * as dbWords from './db-words';

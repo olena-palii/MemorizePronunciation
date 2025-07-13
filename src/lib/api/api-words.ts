@@ -1,3 +1,6 @@
+// Copyright 2025 Olena Palii
+// SPDX-License-Identifier: Apache-2.0
+
 import { Word } from "$lib";
 import type { WordDto, SaveStatisticsDto, DeleteStatisticsDto } from '$lib';
 

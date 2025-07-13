@@ -1,3 +1,6 @@
+// Copyright 2025 Olena Palii
+// SPDX-License-Identifier: Apache-2.0
+
 import Database from 'better-sqlite3';
 
 const DEFAULT_PATH = 'data.db';
