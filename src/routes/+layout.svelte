@@ -11,7 +11,7 @@
   ];
 </script>
 
-<div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50">
+<div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50" role="navigation" aria-label="Main navigation">
   <div class="flex-1">
     <a href="/" class="btn btn-ghost text-xl">Memorize Pr.</a>
   </div>
@@ -32,7 +32,7 @@
   </div>
 </div>
 
-<div class="dock lg:hidden">
+<div class="dock lg:hidden" role="navigation" aria-label="Mobile navigation">
   {#each navItems as item}
     <a href={item.href}>
       <svelte:component this={item.icon} />
@@ -41,5 +41,6 @@
   {/each}
 </div>
 
-<div class="pt-16"></div>
-<slot />
+<main class="pt-16">
+  <slot />
+</main>
