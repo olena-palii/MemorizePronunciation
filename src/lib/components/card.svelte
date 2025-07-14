@@ -3,7 +3,7 @@
  
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Word } from "$lib";
+  import { Word, WordListenIcon, WordRecordIcon, WordPlayIcon } from "$lib";
   import {
     textToSpeech,
     startRecordingAudio,
@@ -115,9 +115,7 @@
     <h2 class="card-title flex text-xl font-bold justify-center">{word.word}</h2>
     <div class="card-pronunciation flex justify-center gap-8 mt-8">
       <button class="btn btn-circle btn-success btn-xl" aria-label="Listen to pronunciation" onclick={() => textToSpeech(word.word)}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
-        </svg>
+        <WordListenIcon />
       </button>
       {#if recording}
         <div class="inline-flex items-center justify-center" style="width: 3.5rem; height: 3.5rem;">
@@ -126,15 +124,11 @@
         </div>
       {:else}
         <button class="btn btn-circle btn-info btn-xl" aria-label="Start recording" onclick={record}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
-          </svg>
+          <WordRecordIcon />
         </button>
       {/if}
       <button class="btn btn-circle btn-info btn-xl" aria-label="Play recorded pronunciation" onclick={play} disabled={!isRecorded()}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-        </svg>
+        <WordPlayIcon />
       </button>
     </div>
     <div class="card-navigation flex join mt-4 justify-center">

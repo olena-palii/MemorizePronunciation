@@ -25,3 +25,7 @@ export { default as NavCardsIcon } from './icons/nav-cards.svelte';
 export { default as NavCreateIcon } from './icons/nav-create.svelte';
 export { default as ThemeLightIcon } from './icons/theme-light.svelte';
 export { default as ThemeDarkIcon } from './icons/theme-dark.svelte';
+export { default as WordDeleteIcon } from './icons/word-delete.svelte';
+export { default as WordListenIcon } from './icons/word-listen.svelte';
+export { default as WordRecordIcon } from './icons/word-record.svelte';
+export { default as WordPlayIcon } from './icons/word-play.svelte';
