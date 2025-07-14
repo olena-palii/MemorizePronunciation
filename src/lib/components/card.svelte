@@ -8,12 +8,12 @@
 
   interface Props {
     word: Word;
-    next: () => any;
-    previous: () => any;
-    updateWord: (word: Word) => any;
+    onNextWord: () => any;
+    onPreviousWord: () => any;
+    onUpdateWord: (word: Word) => any;
   }
 
-  let { word = $bindable(), next, previous, updateWord }: Props = $props();
+  let { word = $bindable(), onNextWord, onPreviousWord, onUpdateWord }: Props = $props();
 
   onMount(() => {
     document.addEventListener("keydown", handleKeydown);
@@ -36,14 +36,14 @@
 
   async function markAsLearned() {
     word.markAsLearned();
-    updateWord(word);
-    next();
+    onUpdateWord(word);
+    onNextWord();
   }
 
   async function resetLearning() {
     word.resetLearning();
-    updateWord(word);
-    next();
+    onUpdateWord(word);
+    onNextWord();
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -74,7 +74,7 @@
       </button>
     </div>
     <div class="card-navigation flex join mt-4 justify-center">
-      <button class="btn join-item w-20" aria-label="Previous word" onclick={previous}>
+      <button class="btn join-item w-20" aria-label="Previous word" onclick={onPreviousWord}>
         <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
@@ -86,7 +86,7 @@
           <button class="mark-as-learned btn join-item btn-success w-48" onclick={markAsLearned}>Mark as known</button>
         {/if}
       </div>
-      <button class="btn join-item w-20" aria-label="Next word" onclick={next}>
+      <button class="btn join-item w-20" aria-label="Next word" onclick={onNextWord}>
         <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>

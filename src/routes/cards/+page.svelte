@@ -78,7 +78,7 @@
   <div class="flex flex-col items-center min-h-screen gap-4 p-4">
     <div class="flex flex-col min-h-screen gap-4 p-4">
         <div class="flex justify-center mb-4 fixed top-24 left-0 w-full z-52" id="word-card">
-          <Card bind:word={selectedWord} next={nextWord} previous={previousWord} updateWord={updateWord}/>
+          <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onUpdateWord={updateWord}/>
         </div>
         <div class="pt-50 fixed top-52 left-0 w-full z-50" id="words-all">
           <div class="flex justify-center items-center">
