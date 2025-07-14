@@ -15,6 +15,7 @@ export { textToSpeech, startRecordingAudio, stopRecordingAudio, playRecordedAudi
 
 // Components
 export { default as WordsTable } from './components/words-table.svelte';
+export { default as RecordingButton } from './components/recording-button.svelte';
 export { default as Card } from './components/card.svelte';
 export { default as AddWord } from './components/add-word.svelte';
 export { default as Theme } from './components/theme.svelte';
