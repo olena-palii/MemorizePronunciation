@@ -12,16 +12,12 @@
     selectedWord = word;
   }
 
-  async function refreshTable() {
-    words = await apiWords.getWords();
-  }
-
   function selectFirstWord() {
     selectedWord = words[0] || new Word({ word: "word" });
   }
   
   onMount(async () => {
-    await refreshTable();
+    words = await apiWords.getWords();
     selectFirstWord();
   });
 
