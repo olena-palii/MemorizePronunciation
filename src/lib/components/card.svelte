@@ -76,7 +76,7 @@
       <button class="btn btn-circle btn-success btn-xl" aria-label="Listen to pronunciation" onclick={() => textToSpeech(word.word)}>
         <WordListenIcon />
       </button>
-      <RecordingButton onstop={stopRecording} />
+      <RecordingButton onStop={stopRecording} />
       <button class="btn btn-circle btn-info btn-xl" aria-label="Play recorded pronunciation" onclick={playRecordedAudio} disabled={!isRecorded()}>
         <WordPlayIcon />
       </button>
