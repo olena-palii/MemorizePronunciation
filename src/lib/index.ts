@@ -23,3 +23,5 @@ export { default as Theme } from './components/theme.svelte';
 export { default as NavHomeIcon } from './icons/nav-home.svelte';
 export { default as NavCardsIcon } from './icons/nav-cards.svelte';
 export { default as NavCreateIcon } from './icons/nav-create.svelte';
+export { default as ThemeLightIcon } from './icons/theme-light.svelte';
+export { default as ThemeDarkIcon } from './icons/theme-dark.svelte';
