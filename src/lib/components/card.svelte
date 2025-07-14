@@ -47,14 +47,6 @@
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      event.preventDefault();
-      next();
-    }
-    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-      event.preventDefault();
-      previous();
-    }
     if (event.key === "Enter") {
       if (word.isLearned) resetLearning();
       else markAsLearned();

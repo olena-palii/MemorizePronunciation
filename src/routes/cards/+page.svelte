@@ -6,6 +6,19 @@
   import { Word, apiWords, WordsTable, Card } from "$lib";
   import type { SaveStatisticsDto, DeleteStatisticsDto } from "$lib";
   let words: Word[] = [];
+  
+  onMount(async () => {
+    words = await apiWords.getWords();
+    selectFirstWord();
+  });
+
+  onMount(() => {
+    document.addEventListener("keydown", handleKeydown);
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  });
+
   let selectedWord: Word;
 
   function selectWord(word: Word) {
@@ -15,11 +28,6 @@
   function selectFirstWord() {
     selectedWord = words[0] || new Word({ word: "word" });
   }
-  
-  onMount(async () => {
-    words = await apiWords.getWords();
-    selectFirstWord();
-  });
 
   async function updateWord(word: Word) {
     const stat: SaveStatisticsDto = await apiWords.saveWord(word);
@@ -53,11 +61,22 @@
       selectedWord = words[currentIndex - 1];
     }
   }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      nextWord();
+    }
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      previousWord();
+    }
+  }
 </script>
 
 {#if words && selectedWord}
   <div class="flex flex-col items-center min-h-screen gap-4 p-4">
-    <div class="flex-col min-h-screen gap-4 p-4">
+    <div class="flex flex-col min-h-screen gap-4 p-4">
         <div class="flex justify-center mb-4 fixed top-24 left-0 w-full z-52" id="word-card">
           <Card bind:word={selectedWord} next={nextWord} previous={previousWord} updateWord={updateWord}/>
         </div>
