@@ -43,10 +43,10 @@
     <AddWord bind:search={searchValue} onSubmit={addWord} />
     <div class="flex-col justify-center min-h-screen">
       <div class="mb-4" id="words-unknown">
-        <WordsTable bind:words={words} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
+        <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
       </div>
       <div id="words-learned">
-        <WordsTable bind:words={wordsLearned} saveWord={saveWord} deleteWord={deleteWord} search={searchValue}/>
+        <WordsTable bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
       </div>
     </div>
   </div>

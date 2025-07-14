@@ -7,14 +7,14 @@
 
     interface Props {
         words: Word[];
-        saveWord: (word: Word) => any;
-        deleteWord: (word: Word) => any;
-        onDoubkeClick?: (word: Word) => void;
         search?: string;
         selected?: Word;
+        onSaveWord: (word: Word) => any;
+        onDeleteWord: (word: Word) => any;
+        onDoubleClick?: (word: Word) => void;
     }
 
-    let { words = $bindable(), saveWord, deleteWord, onDoubkeClick, search, selected = $bindable() }: Props = $props();
+    let { words = $bindable(), search, selected = $bindable(), onSaveWord, onDeleteWord, onDoubleClick = () => {} }: Props = $props();
 
     let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
 
@@ -40,10 +40,10 @@
         </thead>
         <tbody>
         {#each filteredWords as word (word.id)}
-        <tr data-id="{word.id}" class="word-row hover:bg-base-300 {word.id === selected?.id ? 'bg-base-300' : ''}" ondblclick={() => { if (onDoubkeClick) onDoubkeClick(word); }}>
+        <tr data-id="{word.id}" class="word-row hover:bg-base-300 {word.id === selected?.id ? 'bg-base-300' : ''}" ondblclick={() => { onDoubleClick(word); }}>
             <th>
             <label>
-                <input type="checkbox" class="word-checkbox checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; saveWord(word); }} />
+                <input type="checkbox" class="word-checkbox checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; onSaveWord(word); }} />
             </label>
             </th>
             <td>
@@ -54,7 +54,7 @@
             <td class="word-word whitespace-nowrap overflow-hidden text-ellipsis">{word.word}</td>
             <td class="word-period hidden md:table-cell whitespace-nowrap overflow-hidden text-ellipsis">{word.learningPeriod}</td>
             <td>
-                <button class="word-delete btn btn-square" aria-label="Delete word" onclick={() => deleteWord(word)}>
+                <button class="word-delete btn btn-square" aria-label="Delete word" onclick={() => onDeleteWord(word)}>
                     <WordDeleteIcon />
                 </button>
             </td>

@@ -82,7 +82,7 @@
         </div>
         <div class="pt-50 fixed top-52 left-0 w-full z-50" id="words-all">
           <div class="flex justify-center items-center">
-            <WordsTable bind:words={words} saveWord={updateWord} deleteWord={deleteWord} onDoubkeClick={selectWord} bind:selected={selectedWord}/>
+            <WordsTable bind:words={words} onSaveWord={updateWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
           </div>
         </div>
     </div>
