@@ -6,10 +6,10 @@
   import { startRecordingAudio, stopRecordingAudio, WordRecordIcon } from "$lib";
 
   interface Props {
-    onStop: () => any;
+    onStop?: () => any;
   }
 
-  let { onStop }: Props = $props();
+  let { onStop = () => {} }: Props = $props();
 
   onMount(() => {
     document.addEventListener("keydown", handleKeydown);
