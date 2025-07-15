@@ -27,21 +27,23 @@
   }
 </script>
 
-<form class="flex flex-col items-center min-h-screen gap-4 p-4" id="create-words" onsubmit={saveWords}>
-  <textarea class="textarea w-full max-w-xl border-base-content/5" rows="12" placeholder="Enter words, one per line" bind:value={text}></textarea>
-  {#if saving}
-    <span class="loading loading-spinner loading-xl"></span>
-  {:else}
-      <button type="submit" class="btn btn-success flex w-full max-w-xl">Create words</button>
-      <div class="join flex w-full max-w-xl">
-        {#if stat}
-          <div class="flex gap-4 p-4"  id="create-stat">
-            {#if stat.created.count > 0}<span class="text-green-500" id="stat-created">{stat.created.count} created</span>{/if}
-            {#if stat.updated.count > 0}<span class="text-blue-500" id="stat-updated">{stat.updated.count} updated</span>{/if}
-            {#if stat.duplicates.count > 0}<span class="text-yellow-500" id="stat-duplicated">{stat.duplicates.count} duplicated</span>{/if}
-            {#if stat.skipped.count > 0}<span class="text-gray-500" id="stat-skipped">{stat.skipped.count} skipped</span>{/if}
-          </div>
-        {/if}
+<div class="flex flex-col items-center min-h-screen p-4">
+  <form class="flex flex-col w-full max-w-xl gap-4" id="create-words" onsubmit={saveWords}>
+    <textarea class="textarea w-full border-base-content/5" rows="12" placeholder="Enter words, one per line" bind:value={text}></textarea>
+    {#if saving}
+      <div class="flex justify-center w-full">
+        <span class="loading loading-spinner loading-xl"></span>
       </div>
-  {/if}
-</form>
+    {:else}
+      <button type="submit" class="btn btn-success w-full">Create words</button>
+      {#if stat}
+        <div class="flex w-full gap-4"  id="create-stat">
+          {#if stat.created.count > 0}<span class="text-green-500" id="stat-created">{stat.created.count} created</span>{/if}
+          {#if stat.updated.count > 0}<span class="text-blue-500" id="stat-updated">{stat.updated.count} updated</span>{/if}
+          {#if stat.duplicates.count > 0}<span class="text-yellow-500" id="stat-duplicates">{stat.duplicates.count} duplicate{stat.duplicates.count==1 ? "" :  "s"}</span>{/if}
+          {#if stat.skipped.count > 0}<span class="text-gray-500" id="stat-skipped">{stat.skipped.count} skipped</span>{/if}
+        </div>
+      {/if}
+    {/if}
+  </form>
+</div>
