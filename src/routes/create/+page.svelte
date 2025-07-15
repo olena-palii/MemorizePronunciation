@@ -27,7 +27,7 @@
   }
 </script>
 
-<div class="flex flex-col items-center h-full max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-4rem)] p-4">
+<div class="top-container">
   <form class="flex flex-col w-full max-w-xl gap-4" id="create-words" onsubmit={saveWords}>
     <textarea class="textarea w-full border-base-content/5" rows="12" placeholder="Enter words, one per line" bind:value={text}></textarea>
     {#if saving}

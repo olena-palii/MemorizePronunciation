@@ -74,7 +74,7 @@
   }
 </script>
 
-<div class="fixed top-16 flex flex-col items-center w-full h-full max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-4rem)] gap-4 p-4">
+<div class="top-container fixed top-16">
   {#if words && selectedWord}
     <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onSaveWord={saveWord}/>
     <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
