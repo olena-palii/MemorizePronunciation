@@ -7,6 +7,7 @@
 
     interface Props {
         id?: string;
+        h?: string;
         words: Word[];
         search?: string;
         selected?: Word;
@@ -15,7 +16,7 @@
         onDoubleClick?: (word: Word) => void;
     }
 
-    let { id = "words-all", words = $bindable(), search, selected = $bindable(), onSaveWord, onDeleteWord, onDoubleClick = () => {} }: Props = $props();
+    let { id = "words-all", h = "max-h-screen", words = $bindable(), search, selected = $bindable(), onSaveWord, onDeleteWord, onDoubleClick = () => {} }: Props = $props();
 
     let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
 
@@ -27,9 +28,8 @@
     });
 </script>
 
-<div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96" id={id}>
-    <div class="overflow-x-hidden h-full w-full">
-    <table class="table-sm table-pin-rows table-fixed w-full max-w-xl">
+<div class={`overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 w-full max-w-xl ${h}`} id={id}>
+    <table class="table-sm table-pin-rows table-fixed w-full">
         <thead class="sticky top-0 z-10 bg-base-100">
         <tr>
             <th class="w-16">Known</th>
@@ -63,5 +63,4 @@
         {/each}
         </tbody>
     </table>
-    </div>
 </div>

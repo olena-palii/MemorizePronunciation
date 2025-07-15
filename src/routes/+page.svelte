@@ -39,10 +39,10 @@
 </script>
 
 {#if words && wordsLearned}
-  <div class="flex flex-col items-center min-h-screen gap-4 p-4">
+  <div class="flex flex-col items-center h-full max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-4rem)] gap-4 p-4">
     <AddWord bind:search={searchValue} onSubmit={addWord} />
-    <WordsTable id="words-unknown" bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
-    <WordsTable id="words-learned" bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
+    <WordsTable id="words-unknown" h="h-96" bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
+    <WordsTable id="words-learned" h="h-96" bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
   </div>
   {:else}
     <div class="flex justify-center items-center min-h-screen"> 
