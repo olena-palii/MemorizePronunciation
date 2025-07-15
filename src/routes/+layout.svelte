@@ -20,7 +20,7 @@
   }
 </script>
 
-<nav class="navbar z-50 bg-base-100 shadow-sm fixed top-0" aria-label="Main navigation">
+<nav class="navbar z-50 bg-base-100 shadow-sm fixed top-0 py-1" aria-label="Main navigation">
   <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
   <div class="flex-1">
     <a href="/" class="btn btn-ghost text-xl">Memorize Pr.</a>
