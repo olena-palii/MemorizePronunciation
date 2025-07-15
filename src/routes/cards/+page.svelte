@@ -74,21 +74,13 @@
   }
 </script>
 
-{#if words && selectedWord}
-  <div class="flex flex-col items-center min-h-screen gap-4 p-4">
-    <div class="flex flex-col min-h-screen gap-4 p-4">
-        <div class="flex justify-center mb-4 fixed top-24 left-0 w-full z-52" id="word-card">
-          <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onSaveWord={saveWord}/>
-        </div>
-        <div class="pt-50 fixed top-52 left-0 w-full z-50" id="words-all">
-          <div class="flex justify-center items-center">
-            <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
-          </div>
-        </div>
-    </div>
-  </div>
-  {:else}
-    <div class="flex justify-center items-center min-h-screen"> 
-      <span class="loading loading-spinner loading-xl"></span>
-    </div>
-  {/if}
+<div class="fixed top-16 w-full flex flex-col items-center min-h-screen gap-4 p-4">
+  {#if words && selectedWord}
+    <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onSaveWord={saveWord}/>
+    <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
+    {:else}
+      <div class="flex justify-center items-center"> 
+        <span class="loading loading-spinner loading-xl"></span>
+      </div>
+    {/if}
+</div>
