@@ -28,7 +28,7 @@
 </script>
 
 <form class="flex flex-col items-center min-h-screen gap-4 p-4" id="create-words" onsubmit={saveWords}>
-  <textarea class="textarea w-full max-w-xl" rows="12" placeholder="Enter words, one per line" bind:value={text}></textarea>
+  <textarea class="textarea w-full max-w-xl border-base-content/5" rows="12" placeholder="Enter words, one per line" bind:value={text}></textarea>
   {#if saving}
     <span class="loading loading-spinner loading-xl"></span>
   {:else}
