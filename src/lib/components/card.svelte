@@ -10,10 +10,10 @@
     word: Word;
     onNextWord: () => any;
     onPreviousWord: () => any;
-    onUpdateWord: (word: Word) => any;
+    onSaveWord: (word: Word) => any;
   }
 
-  let { word = $bindable(), onNextWord, onPreviousWord, onUpdateWord }: Props = $props();
+  let { word = $bindable(), onNextWord, onPreviousWord, onSaveWord }: Props = $props();
 
   onMount(() => {
     document.addEventListener("keydown", handleKeydown);
@@ -36,13 +36,13 @@
 
   async function markAsLearned() {
     word.markAsLearned();
-    onUpdateWord(word);
+    onSaveWord(word);
     onNextWord();
   }
 
   async function resetLearning() {
     word.resetLearning();
-    onUpdateWord(word);
+    onSaveWord(word);
     onNextWord();
   }
 

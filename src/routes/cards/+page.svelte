@@ -29,7 +29,7 @@
     selectedWord = words[0] || new Word({ word: "word" });
   }
 
-  async function updateWord(word: Word) {
+  async function saveWord(word: Word) {
     const stat: SaveStatisticsDto = await apiWords.saveWord(word);
     if (stat.updated.count === 0) return;
     const index = words.findIndex((w) => w.id === word.id);
@@ -78,11 +78,11 @@
   <div class="flex flex-col items-center min-h-screen gap-4 p-4">
     <div class="flex flex-col min-h-screen gap-4 p-4">
         <div class="flex justify-center mb-4 fixed top-24 left-0 w-full z-52" id="word-card">
-          <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onUpdateWord={updateWord}/>
+          <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onSaveWord={saveWord}/>
         </div>
         <div class="pt-50 fixed top-52 left-0 w-full z-50" id="words-all">
           <div class="flex justify-center items-center">
-            <WordsTable bind:words={words} onSaveWord={updateWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
+            <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
           </div>
         </div>
     </div>
