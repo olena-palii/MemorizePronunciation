@@ -38,15 +38,14 @@
   }
 </script>
 
-{#if words && wordsLearned}
-  <div class="top-container">
+<div class="top-container">
+  {#if words && wordsLearned}
     <AddWord bind:search={searchValue} onSubmit={addWord} />
     <WordsTable id="words-unknown" h="h-96" bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
     <WordsTable id="words-learned" h="h-96" bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
-  </div>
   {:else}
     <div class="flex justify-center items-center min-h-screen"> 
       <span class="loading loading-spinner loading-xl"></span>
     </div>
   {/if}
-
+</div>
