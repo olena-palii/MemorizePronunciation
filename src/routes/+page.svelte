@@ -41,12 +41,8 @@
 {#if words && wordsLearned}
   <div class="flex flex-col items-center min-h-screen gap-4 p-4">
     <AddWord bind:search={searchValue} onSubmit={addWord} />
-    <div id="words-unknown">
-      <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
-    </div>
-    <div id="words-learned">
-      <WordsTable bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
-    </div>
+    <WordsTable id="words-unknown" bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
+    <WordsTable id="words-learned" bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
   </div>
   {:else}
     <div class="flex justify-center items-center min-h-screen"> 

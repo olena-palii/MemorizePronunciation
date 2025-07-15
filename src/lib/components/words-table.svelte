@@ -6,6 +6,7 @@
     import { textToSpeech, WordDeleteIcon, WordListenIcon } from "$lib";
 
     interface Props {
+        id?: string;
         words: Word[];
         search?: string;
         selected?: Word;
@@ -14,7 +15,7 @@
         onDoubleClick?: (word: Word) => void;
     }
 
-    let { words = $bindable(), search, selected = $bindable(), onSaveWord, onDeleteWord, onDoubleClick = () => {} }: Props = $props();
+    let { id = "words-all", words = $bindable(), search, selected = $bindable(), onSaveWord, onDeleteWord, onDoubleClick = () => {} }: Props = $props();
 
     let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
 
@@ -26,7 +27,7 @@
     });
 </script>
 
-<div class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
+<div id={id} class="overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 h-96">
     <div class="overflow-x-hidden h-full w-full">
     <table class="table-sm table-pin-rows table-fixed w-full max-w-xl">
         <thead class="sticky top-0 z-10 bg-base-100">
