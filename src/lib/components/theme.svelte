@@ -30,7 +30,7 @@
     }
 </script>
 
-<label class="theme-toggle flex cursor-pointer gap-2" title="Toggle theme">
+<label class="theme-toggle flex cursor-pointer" title="Toggle theme">
     <ThemeLightIcon />
     <input
         type="checkbox"
