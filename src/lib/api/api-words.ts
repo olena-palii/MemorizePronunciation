@@ -17,8 +17,7 @@ export async function saveWord(word: Word): Promise<SaveStatisticsDto> {
 const emptySaveStatistics: SaveStatisticsDto = {
     created: { count: 0, words: [] },
     updated: { count: 0, words: [] },
-    duplicates: { count: 0, words: [] },
-    skipped: { count: 0 }
+    duplicates: { count: 0, words: [] }
 };
 
 export async function saveWords(words: Word[]): Promise<SaveStatisticsDto> {
@@ -40,10 +39,7 @@ export async function deleteWord(word: Word): Promise<DeleteStatisticsDto> {
     return deleteWords([word]) as Promise<DeleteStatisticsDto>;
 }
 
-const emptyDeleteStatistics: DeleteStatisticsDto = {
-    deleted: 0,
-    skipped: 0
-};
+const emptyDeleteStatistics: DeleteStatisticsDto = { deleted: 0 };
 
 export async function deleteWords(words: Word[]): Promise<DeleteStatisticsDto> {
     const data = await api<DeleteStatisticsDto>({

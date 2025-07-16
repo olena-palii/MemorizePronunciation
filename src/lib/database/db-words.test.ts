@@ -167,8 +167,6 @@ test('save many words', () => {
     expect(stats.duplicates.count).toBe(1);
     expect(stats.duplicates.words.length).toBe(1);
     expect(stats.duplicates.words[0].word).toBe('duplicate');
-
-    expect(stats.skipped.count).toBe(1);
 });
 
 // #endregion
@@ -198,7 +196,6 @@ test('delete statistics', () => {
     const noIdWord: WordDto = { word: 'no-id-word' };
     const stats = dbWords.deleteWords([wordsBefore[0], noIdWord]);
     expect(stats.deleted).toBe(1);
-    expect(stats.skipped).toBe(1);
     const wordsAfter = dbWords.getWords();
     expect(wordsAfter.length).toBe(wordsBefore.length - 1);
     expect(dbWords.getWordById(wordsBefore[0].id!)).toBeUndefined();

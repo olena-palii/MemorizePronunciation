@@ -26,16 +26,11 @@ export interface SaveStatisticsDto {
     duplicates: {
         count: number;
         words: WordDto[];
-    },
-    skipped: {
-        count: number;
-        // No skipped words because of possible unsafe values without normalization
     }
 }
 
 export interface DeleteStatisticsDto {
     deleted: number;
-    skipped: number;
 }
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';

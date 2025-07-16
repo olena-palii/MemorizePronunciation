@@ -3,7 +3,7 @@
 
 import { expect, test } from '@playwright/test';
 
-const customStat = {"created":{"count":3,"words":[{"id":117,"word":"wonderful","created":"2025-07-09T20:30:40.281Z","learned":null},{"id":118,"word":"butter","created":"2025-07-09T20:30:40.281Z","learned":null},{"id":119,"word":"knife","created":"2025-07-09T20:30:40.281Z","learned":null}]},"updated":{"count":1,"words":[{"id":120,"word":"update","created":"2025-07-09T20:30:40.281Z","learned":null}]},"duplicates":{"count":2,"words":[{"id":75,"word":"test","created":"2025-07-09T19:10:14.097Z","learned":null},{"id":75,"word":"test","created":"2025-07-09T19:10:14.097Z","learned":null}]},"skipped":{"count":7}};
+const customStat = {"created":{"count":3,"words":[{"id":117,"word":"wonderful","created":"2025-07-09T20:30:40.281Z","learned":null},{"id":118,"word":"butter","created":"2025-07-09T20:30:40.281Z","learned":null},{"id":119,"word":"knife","created":"2025-07-09T20:30:40.281Z","learned":null}]},"updated":{"count":1,"words":[{"id":120,"word":"update","created":"2025-07-09T20:30:40.281Z","learned":null}]},"duplicates":{"count":2,"words":[{"id":75,"word":"test","created":"2025-07-09T19:10:14.097Z","learned":null},{"id":75,"word":"test","created":"2025-07-09T19:10:14.097Z","learned":null}]}};
 
 test.beforeEach(async ({ page }) => {
 	await page.goto('/create');
@@ -26,7 +26,6 @@ test('create statistics', async ({ page }) => {
 	await expect(page.locator('#stat-created')).toHaveText('3 created');
 	await expect(page.locator('#stat-updated')).toHaveText('1 updated');
 	await expect(page.locator('#stat-duplicates')).toHaveText('2 duplicates');
-	await expect(page.locator('#stat-skipped')).toHaveText('7 skipped');
 });
 
 test('create words', async ({ page }) => {

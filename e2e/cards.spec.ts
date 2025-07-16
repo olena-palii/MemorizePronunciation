@@ -61,7 +61,7 @@ async function mockWordsAPI(page) {
 async function mockMarkAsKnownAPI(page) {
 	await page.route('*/**/api/words*', async route => {
 		await route.fulfill({
-			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 202, "word": "unknown-one", "created": "2025-07-12T19:39:22.660Z", "learned": "2025-07-12T22:07:06.600Z" }] }, "duplicates": { "count": 0, "words": [] }, "skipped": { "count": 0 } })
+			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 202, "word": "unknown-one", "created": "2025-07-12T19:39:22.660Z", "learned": "2025-07-12T22:07:06.600Z" }] }, "duplicates": { "count": 0, "words": [] } })
 		});
 	});
 }
@@ -69,7 +69,7 @@ async function mockMarkAsKnownAPI(page) {
 async function mockResetLearningAPI(page) {
 	await page.route('*/**/api/words*', async route => {
 		await route.fulfill({
-			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 197, "word": "learned-one", "created": "2025-07-12T19:38:39.936Z", "learned": null }] }, "duplicates": { "count": 0, "words": [] }, "skipped": { "count": 0 } })
+			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 197, "word": "learned-one", "created": "2025-07-12T19:38:39.936Z", "learned": null }] }, "duplicates": { "count": 0, "words": [] } })
 		});
 	});
 }

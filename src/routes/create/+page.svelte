@@ -42,7 +42,6 @@
           {#if stat.created.count > 0}<span class="text-green-500" id="stat-created">{stat.created.count} created</span>{/if}
           {#if stat.updated.count > 0}<span class="text-blue-500" id="stat-updated">{stat.updated.count} updated</span>{/if}
           {#if stat.duplicates.count > 0}<span class="text-yellow-500" id="stat-duplicates">{stat.duplicates.count} duplicate{stat.duplicates.count==1 ? "" :  "s" }</span>{/if}
-          {#if stat.skipped.count > 0}<span class="text-gray-500" id="stat-skipped">{stat.skipped.count} skipped</span>{/if}
         </div>
       {/if}
     {/if}

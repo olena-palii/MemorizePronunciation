@@ -41,7 +41,7 @@
 
   async function deleteWord(word: Word) {
     const stat: DeleteStatisticsDto = await apiWords.deleteWord(word);
-    if (stat.deleted > 0 || stat.skipped > 0) {
+    if (stat.deleted > 0) {
       addToast({ message: "Successfully deleted word", duration: 1000 });
       words = words.filter((w) => w.id !== word.id);
       if (selectedWord && selectedWord.id === word.id) selectFirstWord();
