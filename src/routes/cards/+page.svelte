@@ -3,7 +3,7 @@
  
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Word, apiWords, WordsTable, Card } from "$lib";
+  import { Word, apiWords, WordsTable, Card, addToast } from "$lib";
   import type { SaveStatisticsDto, DeleteStatisticsDto } from "$lib";
   let words: Word[] = [];
   
@@ -41,10 +41,10 @@
 
   async function deleteWord(word: Word) {
     const stat: DeleteStatisticsDto = await apiWords.deleteWord(word);
-    if (stat.deleted === 0) return;
-    words = words.filter((w) => w.id !== word.id);
-    if (selectedWord && selectedWord.id === word.id) {
-      selectFirstWord();
+    if (stat.deleted > 0 || stat.skipped > 0) {
+      addToast({ message: "Successfully deleted word", duration: 1000 });
+      words = words.filter((w) => w.id !== word.id);
+      if (selectedWord && selectedWord.id === word.id) selectFirstWord();
     }
   }
 
