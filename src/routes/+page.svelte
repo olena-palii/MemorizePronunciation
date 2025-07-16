@@ -34,13 +34,16 @@
       addToast({ message: "Successfully created word", duration: 1000 });
       stat.created.words.forEach(updateTables);
       searchValue = "";
+    } else if (stat.duplicates.count > 0) {
+      addToast({ message: "Word already exists", duration: 3000, type: "warning" });
+      searchValue = "";
     }
   }
 
   async function saveWord(word: Word) {
     const stat = await apiWords.saveWord(word);
     if (stat.updated.count > 0) stat.updated.words.forEach(updateTables);
-}
+  }
 
   async function deleteWord(word: Word) {
     const stat = await apiWords.deleteWord(word);
