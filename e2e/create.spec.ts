@@ -25,7 +25,7 @@ test('create statistics', async ({ page }) => {
 	await expect(page.locator('#create-stat')).toBeVisible();
 	await expect(page.locator('#stat-created')).toHaveText('3 created');
 	await expect(page.locator('#stat-updated')).toHaveText('1 updated');
-	await expect(page.locator('#stat-duplicated')).toHaveText('2 duplicated');
+	await expect(page.locator('#stat-duplicates')).toHaveText('2 duplicates');
 	await expect(page.locator('#stat-skipped')).toHaveText('7 skipped');
 });
 
