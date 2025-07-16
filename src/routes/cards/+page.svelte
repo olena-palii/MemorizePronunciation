@@ -79,7 +79,7 @@
     <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onSaveWord={saveWord}/>
     <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
     {:else}
-      <div class="flex justify-center items-center"> 
+      <div class="flex justify-center items-center min-h-screen"> 
         <span class="loading loading-spinner loading-xl"></span>
       </div>
     {/if}
