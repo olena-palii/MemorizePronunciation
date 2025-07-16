@@ -8,6 +8,12 @@ export interface WordDto {
     learned?: string;
 }
 
+export interface apiDto {
+    input: RequestInfo,
+    init?: RequestInit,
+    errorMessage?: string
+}
+
 export interface SaveStatisticsDto {
     created: {
         count: number;
