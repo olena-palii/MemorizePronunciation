@@ -2,7 +2,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
  
 <script lang="ts">
-  import { Word, apiWords } from "$lib";
+  import { Word, apiWords, addToast } from "$lib";
   import type { SaveStatisticsDto } from "$lib";
 
   let text = "";
@@ -21,6 +21,7 @@
     saving = true;
     try {
       stat = await apiWords.saveWords(words);
+      if(stat.created.count > 0) addToast({ message: `Successfully created ${stat.created.count} word${stat.created.count > 1 ? 's' : ''}`, duration: 3000 });
     } finally {
       saving = false;
     }
@@ -40,7 +41,7 @@
         <div class="flex w-full gap-4"  id="create-stat">
           {#if stat.created.count > 0}<span class="text-green-500" id="stat-created">{stat.created.count} created</span>{/if}
           {#if stat.updated.count > 0}<span class="text-blue-500" id="stat-updated">{stat.updated.count} updated</span>{/if}
-          {#if stat.duplicates.count > 0}<span class="text-yellow-500" id="stat-duplicates">{stat.duplicates.count} duplicate{stat.duplicates.count==1 ? "" :  "s"}</span>{/if}
+          {#if stat.duplicates.count > 0}<span class="text-yellow-500" id="stat-duplicates">{stat.duplicates.count} duplicate{stat.duplicates.count==1 ? "" :  "s" }</span>{/if}
           {#if stat.skipped.count > 0}<span class="text-gray-500" id="stat-skipped">{stat.skipped.count} skipped</span>{/if}
         </div>
       {/if}
