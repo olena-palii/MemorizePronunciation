@@ -4,7 +4,7 @@
 <script lang="ts">
   import "../app.css";
   import { page } from '$app/state';
-  import { Theme, NavHomeIcon, NavCardsIcon, NavCreateIcon } from "$lib";
+  import { Theme, ToastAlert, NavHomeIcon, NavCardsIcon, NavCreateIcon } from "$lib";
   const navItems = [
     { href: "/", icon: NavHomeIcon, label: "Home" },
     { href: "/cards", icon: NavCardsIcon, label: "Cards" },
@@ -20,7 +20,7 @@
   }
 </script>
 
-<nav class="navbar z-50 bg-base-100 shadow-sm fixed top-0 py-1" aria-label="Main navigation">
+<nav class="navbar z-40 bg-base-100 shadow-sm fixed top-0 py-1" aria-label="Main navigation">
   <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
   <div class="flex-1">
     <a href="/" class="btn btn-ghost text-xl">Memorize Pr.</a>
@@ -42,7 +42,7 @@
   </div>
 </nav>
 
-<nav class="dock z-50 lg:hidden fixed bottom-0 h-16" aria-label="Mobile navigation">
+<nav class="dock z-40 lg:hidden fixed bottom-0 h-16" aria-label="Mobile navigation">
   {#each navItems as item}
     <a href={item.href} class="{dockActivePage(item.href)}">
       <svelte:component this={item.icon} />
@@ -51,6 +51,7 @@
   {/each}
 </nav>
 
+<ToastAlert />
 <main id="main" tabindex="-1" class="pt-16">
   <slot />
 </main>

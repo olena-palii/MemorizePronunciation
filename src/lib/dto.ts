@@ -31,3 +31,12 @@ export interface DeleteStatisticsDto {
     deleted: number;
     skipped: number;
 }
+
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+export interface ToastDto {
+    id?: string;
+    message: string;
+    type?: ToastType;
+    duration?: number;
+}

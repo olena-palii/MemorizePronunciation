@@ -80,7 +80,7 @@ async function mockResetLearningAPI(page) {
 
 test.beforeEach(async ({ page, context }) => {
 	await mockWordsAPI(page);
-	await context.grantPermissions(['microphone']);
+	await context.grantPermissions(['microphone', 'clipboard-read', 'clipboard-write']);
 	await mockAudioRecording(page);
 	await addSpyFlagsForAudioPlay(page);
 	await addSpyFlagsForTTScall(page);
@@ -375,6 +375,13 @@ test('reset learning on table', async ({ page }) => {
 	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).not.toBeChecked();
 	await expect(cardTitle).toHaveText(word);
 	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).toBeEnabled();
+});
+
+test('copy words from table with all words', async ({ page }) => {
+	await page.locator('#words-all').getByRole('button', { name: 'Copy to clipboard' }).click();	
+	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
+	expect(clipboardContent).toBe("unknown-one\nunknown-two\nlearned-one\nlearned-two");
+	await expect(page.locator('.toast .alert.alert-success')).toHaveText('Copied to clipboard');
 });
 
 // #endregion

@@ -2,7 +2,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
  
 <script lang="ts">
-    import { Word, textToSpeech, WordDeleteIcon, WordListenIcon } from "$lib";
+    import { Word, CopyButton, textToSpeech, WordDeleteIcon, WordListenIcon } from "$lib";
 
     interface Props {
         id?: string;
@@ -34,7 +34,7 @@
         <tr>
             <th class="w-16">Known</th>
             <th class="w-16">Listen</th>
-            <th class="w-auto">Word</th>
+            <th class="w-auto">Words <CopyButton bind:text={copyWordsText} /></th>
             <th class="w-24 hidden md:table-cell">Learning</th>
             <th class="w-16">Delete</th>
         </tr>
