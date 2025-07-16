@@ -2,7 +2,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 
 <script lang="ts">
-    import { CopyIcon } from "$lib";
+    import { CopyIcon, addToast } from "$lib";
 
     interface Props {
         text: string;
@@ -12,6 +12,7 @@
 
     function copy() {
         navigator.clipboard.writeText(text);
+        addToast({ message: "Copied to clipboard", duration: 1000 });
     }
 </script>
 
