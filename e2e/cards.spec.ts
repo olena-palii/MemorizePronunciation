@@ -381,6 +381,7 @@ test('copy words from table with all words', async ({ page }) => {
 	await page.locator('#words-all').getByRole('button', { name: 'Copy to clipboard' }).click();	
 	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
 	expect(clipboardContent).toBe("unknown-one\nunknown-two\nlearned-one\nlearned-two");
+	await expect(page.locator('.toast .alert.alert-success')).toHaveText('Copied to clipboard');
 });
 
 // #endregion
