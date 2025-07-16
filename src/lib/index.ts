@@ -19,6 +19,7 @@ export { default as RecordingButton } from './components/recording-button.svelte
 export { default as Card } from './components/card.svelte';
 export { default as AddWord } from './components/add-word.svelte';
 export { default as Theme } from './components/theme.svelte';
+export { default as CopyButton } from './components/copy-button.svelte';
 
 // Icons
 export { default as NavHomeIcon } from './icons/nav-home.svelte';
@@ -30,3 +31,4 @@ export { default as WordDeleteIcon } from './icons/word-delete.svelte';
 export { default as WordListenIcon } from './icons/word-listen.svelte';
 export { default as WordRecordIcon } from './icons/word-record.svelte';
 export { default as WordPlayIcon } from './icons/word-play.svelte';
+export { default as CopyIcon } from './icons/copy.svelte';
