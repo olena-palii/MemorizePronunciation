@@ -29,7 +29,7 @@
   {#each toastList as toast (toast.id)}
     <div role="alert" class={alertType(toast.type)} in:fly={{ y: -20, duration: 200 }} out:fly={{ y: -20, duration: 200 }}>
         <span>{toast.message}</span>
-        <button class="btn btn-sm btn-ghost !bg-transparent border-none shadow-none" aria-label="Close toast" onclick={() => closeToast(toast.id)}>
+        <button class="btn btn-sm btn-ghost !bg-transparent border-none shadow-none hover:text-inherit" aria-label="Close toast" onclick={() => closeToast(toast.id)}>
             <ToastCloseIcon />
         </button>
     </div>
