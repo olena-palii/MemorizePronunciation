@@ -22,6 +22,7 @@ test('create statistics', async ({ page }) => {
 	await page.reload();
 	await page.locator('#create-words').getByPlaceholder('Enter words, one per line').fill("test");
 	await page.locator('#create-words').getByRole('button', { name: 'Create words' }).click();
+	await expect(page.locator('.toast .alert-success').last()).toHaveText('Successfully created 3 words');
 	await expect(page.locator('#create-stat')).toBeVisible();
 	await expect(page.locator('#stat-created')).toHaveText('3 created');
 	await expect(page.locator('#stat-updated')).toHaveText('1 updated');
@@ -33,6 +34,7 @@ test('create words', async ({ page }) => {
 	const text = words.join('\n');
 	await page.locator('#create-words').getByPlaceholder('Enter words, one per line').fill(text);
 	await page.locator('#create-words').getByRole('button', { name: 'Create words' }).click();
+	await expect(page.locator('.toast .alert-success').last()).toHaveText('Successfully created 3 words');
 	await expect(page.locator('#stat-created')).toHaveText('3 created');
 	await page.goto('/');
 	const rows = page.locator('#words-unknown table .word-row');

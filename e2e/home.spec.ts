@@ -93,6 +93,16 @@ test('empty tables', async ({ page }) => {
 test('add and delete word', async ({ page }) => {
 	const word = 'new-word';
 	await createWord(page, word);
+	await expect(page.locator('.toast .alert-success').last()).toHaveText('Successfully created word');
+	await deleteWord(page, word);
+	await expect(page.locator('.toast .alert-success').last()).toHaveText('Successfully deleted word');
+});
+
+test('add duplicate word', async ({ page }) => {
+	const word = 'duplicate-word';
+	await createWord(page, word);
+	await createWord(page, word);
+	await expect(page.locator('.toast .alert-warning').last()).toHaveText('Word already exists');
 	await deleteWord(page, word);
 });
 
@@ -116,13 +126,12 @@ test('copy words from filtered table', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	await page.locator('#add-word').getByPlaceholder('Add new word').fill('to');
 	await page.locator('#words-unknown').getByRole('button', { name: 'Copy to clipboard' }).click();
-	await expect(page.locator('.toast .alert.alert-success')).toHaveText('Copied to clipboard');	
+	await expect(page.locator('.toast .alert-success').last()).toHaveText('Copied to clipboard');
 	const clipboardContentUnknown = await page.evaluate(() => navigator.clipboard.readText());
 	expect(clipboardContentUnknown).toBe("tonnel\ntoday");
 	await page.locator('#words-learned').getByRole('button', { name: 'Copy to clipboard' }).click();
-	await expect(page.locator('.toast .alert.alert-success')).toHaveCount(2);
-	await expect(page.locator('.toast .alert.alert-success').first()).toHaveText('Copied to clipboard');
-	await expect(page.locator('.toast .alert.alert-success').last()).toHaveText('Copied to clipboard');
+	await expect(page.locator('.toast .alert-success')).toHaveCount(2);
+	await expect(page.locator('.toast .alert-success').last()).toHaveText('Copied to clipboard');
 	const clipboardContentLearned = await page.evaluate(() => navigator.clipboard.readText());
 	expect(clipboardContentLearned).toBe("tomorrow");
 });
