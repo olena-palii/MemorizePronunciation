@@ -1,38 +1,82 @@
-# sv
+# Memorize Pronunciation
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Improve your English pronunciation by listening, repeating, and recording yourself. Add new words, track progress, and review with cards.
 
-## Creating a project
+## Home Page
 
-If you're seeing this, you've probably already done this step. Congrats!
+* Search for a word
+* Add a new word
+* Delete a word
+* Listen to the pronunciation of any word
+* Mark words as known or reset learning with a checkbox
+* Copy words directly from any table
 
-```bash
-# create a new project in the current directory
-npx sv create
+<p align="center">
+<img src="image/README/home.gif" alt="Home page" height="600">
+</p>
 
-# create a new project in my-app
-npx sv create my-app
-```
+## Cards Page
+
+* Review word cards
+* Listen to the pronunciation of any word
+* Record your pronunciation and listen to the recorded audio
+* Mark words as known or reset learning
+* Navigate using the keyboard
+* Copy words directly from the table
+
+<p align="center">
+<img src="image/README/cards.gif" alt="Cards page" height="600">
+</p>
+
+## Create Page
+
+* Create list of words, enter one word per line
+* Strip unnecessary characters from the list
+* Skip duplicates
+
+<p align="center">
+<img src="image/README/create.gif" alt="Create page" height="600">
+</p>
+
+## More Features
+
+* Switch between light and dark themes
+* Mobile-friendly responsive design
+
+<p align="center">
+<img src="image/README/mobile.png" alt="Mobile view with dark theme" height="600">
+</p>
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start a development server:
 
 ```bash
 npm run dev
+```
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+Run tests:
+
+```bash
+npm run test
 ```
 
 ## Building
 
-To create a production version of your app:
+Create a production version of your app:
 
 ```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Preview the production build:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+npm run preview
+```
