@@ -46,3 +46,23 @@ test('create words', async ({ page }) => {
 	}
 });
 
+test('500 error handling', async ({ page }) => {
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			status: 500
+		});
+	});
+	await page.locator('#create-words').getByPlaceholder('Enter words, one per line').fill("error-word");
+	await page.locator('#create-words').getByRole('button', { name: 'Create words' }).click();
+	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to save words');
+});
+
+test('no internet connection', async ({ page }) => {
+	await page.route('*/**/api/words*', async route => {
+		await route.abort('internetdisconnected');
+	});
+	await page.locator('#create-words').getByPlaceholder('Enter words, one per line').fill("offline-word");
+	await page.locator('#create-words').getByRole('button', { name: 'Create words' }).click();
+	await expect(page.locator('.toast .alert-error')).toHaveText('No internet connection or server unreachable');
+});
+

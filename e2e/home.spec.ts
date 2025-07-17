@@ -142,4 +142,19 @@ test('copy words button is disabled for empty table', async ({ page }) => {
 	await expect(page.locator('#words-unknown').getByRole('button', { name: 'Copy to clipboard' })).toBeDisabled();
 });
 
+test('500 error handling on delete word', async ({ page }) => {
+	modifyWordsResponse(page, customWords);
+	await expect(page.locator('#add-word')).toBeVisible();
+	await expect(page.locator('#words-unknown')).toBeVisible();
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			status: 500
+		});
+	});
+	const rows = page.locator('table .word-row');
+	const rowToDelete = rows.filter({ hasText: 'rarely' });
+	await rowToDelete.locator('.word-delete').click();
+	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to delete words');
+});
+
 // #endregion

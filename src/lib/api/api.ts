@@ -14,7 +14,7 @@ export async function api<T>(dto: apiDto): Promise<T | undefined> {
         return await response.json() as T;
     } catch (err) {
         console.error('API Error:', err);
-        addToast({ message: 'No internet connection or server error', type: 'error' });
+        addToast({ message: 'No internet connection or server unreachable', type: 'error' });
         return undefined;
     }
 }

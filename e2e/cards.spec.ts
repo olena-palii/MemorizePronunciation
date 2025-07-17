@@ -384,4 +384,16 @@ test('copy words from table with all words', async ({ page }) => {
 	await expect(page.locator('.toast .alert-success').last()).toHaveText('Copied to clipboard');
 });
 
+test('500 error handling on mark as known', async ({ page }) => {
+	await expect(page.locator('#word-card h2')).toHaveText("unknown-one");
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			status: 500
+		});
+	});
+	await cardNavigation.getByRole('button', { name: 'Mark as known' }).click();
+	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to save words');
+});
+
 // #endregion
