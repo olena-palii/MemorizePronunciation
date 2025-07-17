@@ -8,6 +8,12 @@ export interface WordDto {
     learned?: string;
 }
 
+export interface apiDto {
+    input: RequestInfo,
+    init?: RequestInit,
+    errorMessage?: string
+}
+
 export interface SaveStatisticsDto {
     created: {
         count: number;
@@ -20,16 +26,11 @@ export interface SaveStatisticsDto {
     duplicates: {
         count: number;
         words: WordDto[];
-    },
-    skipped: {
-        count: number;
-        // No skipped words because of possible unsafe values without normalization
     }
 }
 
 export interface DeleteStatisticsDto {
     deleted: number;
-    skipped: number;
 }
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';

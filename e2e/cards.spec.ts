@@ -61,7 +61,7 @@ async function mockWordsAPI(page) {
 async function mockMarkAsKnownAPI(page) {
 	await page.route('*/**/api/words*', async route => {
 		await route.fulfill({
-			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 202, "word": "unknown-one", "created": "2025-07-12T19:39:22.660Z", "learned": "2025-07-12T22:07:06.600Z" }] }, "duplicates": { "count": 0, "words": [] }, "skipped": { "count": 0 } })
+			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 202, "word": "unknown-one", "created": "2025-07-12T19:39:22.660Z", "learned": "2025-07-12T22:07:06.600Z" }] }, "duplicates": { "count": 0, "words": [] } })
 		});
 	});
 }
@@ -69,7 +69,7 @@ async function mockMarkAsKnownAPI(page) {
 async function mockResetLearningAPI(page) {
 	await page.route('*/**/api/words*', async route => {
 		await route.fulfill({
-			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 197, "word": "learned-one", "created": "2025-07-12T19:38:39.936Z", "learned": null }] }, "duplicates": { "count": 0, "words": [] }, "skipped": { "count": 0 } })
+			body: JSON.stringify({ "created": { "count": 0, "words": [] }, "updated": { "count": 1, "words": [{ "id": 197, "word": "learned-one", "created": "2025-07-12T19:38:39.936Z", "learned": null }] }, "duplicates": { "count": 0, "words": [] } })
 		});
 	});
 }
@@ -381,7 +381,19 @@ test('copy words from table with all words', async ({ page }) => {
 	await page.locator('#words-all').getByRole('button', { name: 'Copy to clipboard' }).click();	
 	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
 	expect(clipboardContent).toBe("unknown-one\nunknown-two\nlearned-one\nlearned-two");
-	await expect(page.locator('.toast .alert.alert-success')).toHaveText('Copied to clipboard');
+	await expect(page.locator('.toast .alert-success').last()).toHaveText('Copied to clipboard');
+});
+
+test('500 error handling on mark as known', async ({ page }) => {
+	await expect(page.locator('#word-card h2')).toHaveText("unknown-one");
+	const cardNavigation = page.locator('#word-card .card-navigation');
+	await page.route('*/**/api/words*', async route => {
+		await route.fulfill({
+			status: 500
+		});
+	});
+	await cardNavigation.getByRole('button', { name: 'Mark as known' }).click();
+	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to save words');
 });
 
 // #endregion

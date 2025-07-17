@@ -37,17 +37,13 @@ export function saveWords(words: WordDto[]): SaveStatisticsDto {
     const stat: SaveStatisticsDto = {
         created: { count: 0, words: [] },
         updated: { count: 0, words: [] },
-        duplicates: { count: 0, words: [] },
-        skipped: { count: 0 }
+        duplicates: { count: 0, words: [] }
     };
 
     for (const word of words) {
         // Skip empty words
         word.word = Word.normalize(word.word);
-        if (!word.word) {
-            stat.skipped.count++;
-            continue;
-        }
+        if (!word.word) continue;
         // Update if word with this id exists
         if (word.id && getWordById(word.id)) {
             updateWord(word, stat);
@@ -95,13 +91,9 @@ function updateWord(word: WordDto, stat: SaveStatisticsDto): void {
 // #region Delete Words
 
 export function deleteWords(words: WordDto[]): DeleteStatisticsDto {
-    const stat: DeleteStatisticsDto = {
-        deleted: 0,
-        skipped: 0
-    };
+    const stat: DeleteStatisticsDto = { deleted: 0 };
     for (const word of words) {
         if (word.id) deleteWordById(word.id, stat);
-        else stat.skipped++;
     }
     return stat;
 }

@@ -3,7 +3,7 @@
  
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Word, apiWords, WordsTable, Card } from "$lib";
+  import { Word, apiWords, WordsTable, Card, addToast } from "$lib";
   import type { SaveStatisticsDto, DeleteStatisticsDto } from "$lib";
   let words: Word[] = [];
   
@@ -41,10 +41,10 @@
 
   async function deleteWord(word: Word) {
     const stat: DeleteStatisticsDto = await apiWords.deleteWord(word);
-    if (stat.deleted === 0) return;
-    words = words.filter((w) => w.id !== word.id);
-    if (selectedWord && selectedWord.id === word.id) {
-      selectFirstWord();
+    if (stat.deleted > 0) {
+      addToast({ message: "Successfully deleted word", duration: 1000 });
+      words = words.filter((w) => w.id !== word.id);
+      if (selectedWord && selectedWord.id === word.id) selectFirstWord();
     }
   }
 
@@ -79,7 +79,7 @@
     <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onSaveWord={saveWord}/>
     <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onDoubleClick={selectWord} bind:selected={selectedWord}/>
     {:else}
-      <div class="flex justify-center items-center"> 
+      <div class="flex justify-center items-center min-h-screen"> 
         <span class="loading loading-spinner loading-xl"></span>
       </div>
     {/if}

@@ -5,7 +5,7 @@
 
 // Types
 export { Word } from "./word";
-export type { WordDto, SaveStatisticsDto, DeleteStatisticsDto, ToastDto, ToastType } from "./dto";
+export type { WordDto, apiDto, SaveStatisticsDto, DeleteStatisticsDto, ToastDto, ToastType } from "./dto";
 export { Toast } from "./toast";
 
 // API

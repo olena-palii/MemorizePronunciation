@@ -73,7 +73,6 @@ test('delete words', async () => {
     expect(stat.created.words.length).toBe(generatedWords.length);
     const deleteStat: DeleteStatisticsDto = await deleteWords(stat.created.words);
     expect(deleteStat.deleted).toBe(generatedWords.length);
-    expect(deleteStat.skipped).toBe(0);
 });
 
 afterAll(async () => {
