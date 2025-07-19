@@ -32,3 +32,6 @@ vite.config.ts.timestamp-*
 # Database
 data.db
 test.db
+
+# Https certificate
+certificate/
