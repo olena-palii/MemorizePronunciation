@@ -135,5 +135,14 @@ server: {
 ```bash
 https://192.168.100.92:5173
 ```
+## Hostname as URL
 
-## Run the Production Server Locally on MacOS
+Set hostname of your computer, e.g. on MacOS you can change it in Settings > Sharing > Local hostname.
+
+For example, for `my-computer.local` hostname you'll be able to open site from other devices using this URL
+
+```bash
+https://my-computer.local:5173
+```
+
+## Local Server on MacOS
