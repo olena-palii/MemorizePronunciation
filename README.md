@@ -135,11 +135,12 @@ server: {
 ```bash
 https://192.168.100.92:5173
 ```
+
 ## Hostname as URL
 
-Set hostname of your computer, e.g. on MacOS you can change it in Settings > Sharing > Local hostname.
+Set the hostname of your computer. For example, on macOS, you can change it under  **System Settings > Sharing > Local Hostname** . After updating the hostname, reconnect to Wi-Fi to apply the changes to your router.
 
-For example, for `my-computer.local` hostname you'll be able to open site from other devices via:
+If your hostname is `my-computer.local`, you’ll be able to access the site from other devices using:
 
 ```bash
 https://my-computer.local:5173
