@@ -139,7 +139,7 @@ https://192.168.100.92:5173
 
 Set hostname of your computer, e.g. on MacOS you can change it in Settings > Sharing > Local hostname.
 
-For example, for `my-computer.local` hostname you'll be able to open site from other devices using this URL
+For example, for `my-computer.local` hostname you'll be able to open site from other devices via:
 
 ```bash
 https://my-computer.local:5173
