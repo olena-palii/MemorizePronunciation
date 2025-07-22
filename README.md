@@ -83,7 +83,7 @@ npm run preview
 
 ## Certificate
 
-Features like microphone access require both **HTTPS** and  **user permissions**. Mobile browsers  **only allow microphone access over `https://` or `localhost`** .
+Features like microphone access require both **HTTPS** and  **user permissions**. Mobile browsers  **only allow microphone access over `https://` or `localhost`**.
 
 The certificate is generated automatically each time when it expires.
 
@@ -91,7 +91,11 @@ Alternative: [Manually Generate a Certificate for a Local IP](./docs/README-CERT
 
 ## Hostname as URL
 
-Set the hostname of your computer. For example, on macOS, you can change it under  **System Settings > Sharing > Local Hostname**. After updating the hostname, reconnect to Wi-Fi to apply the changes to your router.
+Set the hostname of your computer. For example, on macOS, you can change it under  
+
+* System Settings > Sharing > Local Hostname
+
+After updating the hostname, reconnect to Wi-Fi to apply the changes to your router.
 
 If your hostname is `my-computer.local`, you’ll be able to access the site from other devices using:
 
