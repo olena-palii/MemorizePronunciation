@@ -85,7 +85,7 @@ npm run preview
 
 Features like microphone access require both **HTTPS** and  **user permissions**. Mobile browsers  **only allow microphone access over `https://` or `localhost`** .
 
-The certificate is generated automatically each time you run `npm run dev` or when it expires on the server.
+The certificate is generated automatically each time when it expires.
 
 Alternative: [Manually Generate a Certificate for a Local IP](./docs/README-CERTIFICATE.md)
 
