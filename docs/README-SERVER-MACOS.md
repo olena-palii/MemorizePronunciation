@@ -16,16 +16,16 @@ Create `/Users/_username_/Library/LaunchAgents/com._username_.memorizepronunciat
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.lenanetka.memorizepronunciation</string>
+    <string>com._username_.memorizepronunciation</string>
 
     <key>ProgramArguments</key>
     <array>
       <string>/usr/local/bin/node</string>
-      <string>/Users/lenanetka/Projects/JavaScript/MemorizePronunciation/server.js</string>
+      <string>/Users/_username_/Projects/JavaScript/MemorizePronunciation/server.js</string>
     </array>
 
     <key>WorkingDirectory</key>
-    <string>/Users/lenanetka/Projects/JavaScript/MemorizePronunciation</string>
+    <string>/Users/_username_/Projects/JavaScript/MemorizePronunciation</string>
 
     <key>RunAtLoad</key>
     <true/>
