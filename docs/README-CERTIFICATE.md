@@ -22,7 +22,7 @@ This command installs a local trusted certificate authority (CA) on your develop
 5. Generate an HTTPS certificate for your development IP:
 
 ```bash
-mkcert192.168.100.92
+mkcert 192.168.100.92
 ```
 
 This will generate two files:
@@ -33,7 +33,7 @@ This will generate two files:
 6. Place these certificate files in a `certificate/` folder, and configure your Vite dev server to use them in `vite.config.ts`:
 
 ```ts
-importfsfrom'fs';
+import fs from'fs';
 
 server: {
     host: '192.168.100.92',

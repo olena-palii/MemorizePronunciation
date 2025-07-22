@@ -44,25 +44,25 @@ Create `/Users/_username_/Library/LaunchAgents/com._username_.memorizepronunciat
 Run in Terminal:
 
 ```bash
-launchctllist | grepmemorizepronunciation
+launchctl list | grep memorizepronunciation
 ```
 
 You should see a line with your label, e.g.:
 
 ```bash
-12340com._username_.memorizepronunciation
+1234 0 com._username_.memorizepronunciation
 ```
 
 If you don’t see it, try loading it again:
 
 ```bash
-launchctlload~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
+launchctl load ~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
 ```
 
 Unload the old version if you've made changes:
 
 ```bash
-launchctlunload~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
+launchctl unload ~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
 ```
 
 ## Logs
