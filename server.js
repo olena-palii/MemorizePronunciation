@@ -38,5 +38,5 @@ function reloadServerIfNeeded() {
 if (!fs.existsSync(certPath) || certExpiresSoon(certPath)) generateCert();
 createServer();
 
-// Recheck every 10 minutes
-setInterval(reloadServerIfNeeded, 10 * 60 * 1000);
+// Recheck every 30 minutes
+setInterval(reloadServerIfNeeded, 30 * 60 * 1000);
