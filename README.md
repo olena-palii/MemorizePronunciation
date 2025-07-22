@@ -69,7 +69,7 @@ npm run test
 
 ## Building
 
-Create a production version of your app in `.svetle-kit/output` folder:
+Create a production version of your app in `build` folder:
 
 ```bash
 npm run build
@@ -84,6 +84,10 @@ npm run preview
 ## Certificate
 
 Features like microphone access require both **HTTPS** and  **user permissions**. Mobile browsers  **only allow microphone access over `https://` or `localhost`** .
+
+Right now certificate is generated automatically every time when you run `npm run dev` or when it's expiring on server.
+
+### Alternative: Generate Manually for Local IP
 
 1. Run the app with `server.host: true` set in the `vite.config.ts` file. This will allow Vite to bind to all available network interfaces. Check the terminal output to find the list of network IPs accessible from other devices on your local network.
 2. Choose your preferred local IP (e.g. 192.168.100.92) and update your `vite.config.ts` config:
@@ -138,7 +142,7 @@ https://192.168.100.92:5173
 
 ## Hostname as URL
 
-Set the hostname of your computer. For example, on macOS, you can change it under  **System Settings > Sharing > Local Hostname** . After updating the hostname, reconnect to Wi-Fi to apply the changes to your router.
+Set the hostname of your computer. For example, on macOS, you can change it under  **System Settings > Sharing > Local Hostname**. After updating the hostname, reconnect to Wi-Fi to apply the changes to your router.
 
 If your hostname is `my-computer.local`, you’ll be able to access the site from other devices using:
 
@@ -147,3 +151,74 @@ https://my-computer.local:5173
 ```
 
 ## Local Server on MacOS
+
+### Configs
+
+Production build configs are in `server.js` file.
+
+Production port is different from development port.
+
+### Launch Agent
+
+Create `/Users/_username_/Library/LaunchAgents/com._username_.memorizepronunciation.plist` file in masOS:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com._username_.memorizepronunciation</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/usr/local/bin/node</string>
+      <string>/path/to/your/project/MemorizePronunciation/server.js</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/path/to/your/project/MemorizePronunciation</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/memorizepronunciation.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/memorizepronunciation-error.log</string>
+  </dict>
+</plist>
+```
+
+### Load and unload app in Terminal
+
+Run in Terminal:
+
+```bash
+launchctl list | grep memorizepronunciation
+```
+
+You should see a line with your label, e.g.:
+
+```bash
+1234	0	com._username_.memorizepronunciation
+```
+
+If you don’t see it, try loading it again:
+
+```bash
+launchctl load ~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
+```
+
+Unload the old version if you made changes:
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
+```
+
+Open `tmp` folder with .log files:
+
+```bash
+open /tmp
+```
