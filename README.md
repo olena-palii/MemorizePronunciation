@@ -12,7 +12,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Copy words directly from any table
 
 <p align="center">
-<img src="docs/image/README/home.gif" alt="Home page" height="600">
+<img src="docs/image/home.gif" alt="Home page" height="600">
 </p>
 
 ## Cards Page
@@ -25,7 +25,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Copy words directly from the table
 
 <p align="center">
-<img src="docs/image/README/cards.gif" alt="Cards page" height="600">
+<img src="docs/image/cards.gif" alt="Cards page" height="600">
 </p>
 
 ## Create Page
@@ -35,7 +35,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Skip duplicates
 
 <p align="center">
-<img src="docs/image/README/create.gif" alt="Create page" height="600">
+<img src="docs/image/create.gif" alt="Create page" height="600">
 </p>
 
 ## More Features
@@ -44,7 +44,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Mobile-friendly responsive design
 
 <p align="center">
-<img src="docs/image/README/mobile.png" alt="Mobile view with dark theme" height="600">
+<img src="docs/image/mobile.png" alt="Mobile view with dark theme" height="600">
 </p>
 
 ## Developing
