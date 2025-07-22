@@ -5,8 +5,8 @@
 
 ```ts
 server: {
-host: '192.168.100.92',
-port: 5173,
+    host: '192.168.100.92',
+    port: 5173,
 }
 ```
 
@@ -36,12 +36,12 @@ This will generate two files:
 importfsfrom'fs';
 
 server: {
-host: '192.168.100.92',
-port: 5173,
-https: {
-key: fs.readFileSync('certificate/192.168.100.92-key.pem'),
-cert: fs.readFileSync('certificate/192.168.100.92.pem')
-  }
+    host: '192.168.100.92',
+    port: 5173,
+    https: {
+        key: fs.readFileSync('certificate/192.168.100.92-key.pem'),
+        cert: fs.readFileSync('certificate/192.168.100.92.pem')
+    }
 }
 ```
 
