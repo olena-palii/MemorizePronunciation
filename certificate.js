@@ -21,7 +21,9 @@ function getCertExpirationTime(certPath) {
 export function certExpiresSoon(certPath, thresholdMs = 1000 * 60 * 60) {
   const now = Date.now();
   const expiry = getCertExpirationTime(certPath);
-  return expiry - now <= thresholdMs;
+  const diff = expiry - now;
+  console.log(`[${new Date().toISOString()}]: Certificate expires in ${Math.round(diff / (1000 * 60 * 60))} hours at ${new Date(expiry).toISOString()}`);
+  return diff <= thresholdMs;
 }
 
 export function generateCert() {
