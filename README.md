@@ -12,7 +12,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Copy words directly from any table
 
 <p align="center">
-<img src="image/README/home.gif" alt="Home page" height="600">
+<img src="docs/image/README/home.gif" alt="Home page" height="600">
 </p>
 
 ## Cards Page
@@ -25,7 +25,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Copy words directly from the table
 
 <p align="center">
-<img src="image/README/cards.gif" alt="Cards page" height="600">
+<img src="docs/image/README/cards.gif" alt="Cards page" height="600">
 </p>
 
 ## Create Page
@@ -35,7 +35,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Skip duplicates
 
 <p align="center">
-<img src="image/README/create.gif" alt="Create page" height="600">
+<img src="docs/image/README/create.gif" alt="Create page" height="600">
 </p>
 
 ## More Features
@@ -44,7 +44,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Mobile-friendly responsive design
 
 <p align="center">
-<img src="image/README/mobile.png" alt="Mobile view with dark theme" height="600">
+<img src="docs/image/README/mobile.png" alt="Mobile view with dark theme" height="600">
 </p>
 
 ## Developing
@@ -85,60 +85,9 @@ npm run preview
 
 Features like microphone access require both **HTTPS** and  **user permissions**. Mobile browsers  **only allow microphone access over `https://` or `localhost`** .
 
-Right now certificate is generated automatically every time when you run `npm run dev` or when it's expiring on server.
+The certificate is generated automatically each time you run `npm run dev` or when it expires on the server.
 
-### Alternative: Generate Manually for Local IP
-
-1. Run the app with `server.host: true` set in the `vite.config.ts` file. This will allow Vite to bind to all available network interfaces. Check the terminal output to find the list of network IPs accessible from other devices on your local network.
-2. Choose your preferred local IP (e.g. 192.168.100.92) and update your `vite.config.ts` config:
-
-```ts
-server: {
-  host: '192.168.100.92',
-  port: 5173,
-}
-```
-
-3. Install mkcert on your computer
-4. Set up your local certificate authority:
-
-```bash
-mkcert -install
-```
-
-This command installs a local trusted certificate authority (CA) on your development machine, which is required to generate trusted HTTPS certificates. Using trusted HTTPS certificates prevents your site from showing dangerous site warnings **in Chrome browser** (it may not work for other browsers).
-
-5. Generate an HTTPS certificate for your development IP:
-
-```bash
-mkcert 192.168.100.92
-```
-
-This will generate two files:
-
-* 192.168.100.92.pem
-* 192.168.100.92-key.pem
-
-6. Place these certificate files in a `certificate/` folder, and configure your Vite dev server to use them in `vite.config.ts`:
-
-```ts
-import fs from 'fs';
-
-server: {
-  host: '192.168.100.92',
-  port: 5173,
-  https: {
-    key: fs.readFileSync('certificate/192.168.100.92-key.pem'),
-    cert: fs.readFileSync('certificate/192.168.100.92.pem')
-  }
-}
-```
-
-7. Now, when you run the app with `npm run dev`, you can access it securely from other devices on your network via:
-
-```bash
-https://192.168.100.92:5173
-```
+Alternative: [Manually Generate a Certificate for a Local IP](./docs/README-CERTIFICATE.md)
 
 ## Hostname as URL
 
@@ -150,75 +99,6 @@ If your hostname is `my-computer.local`, you’ll be able to access the site fro
 https://my-computer.local:5173
 ```
 
-## Local Server on MacOS
+## Server
 
-### Configs
-
-Production build configs are in `server.js` file.
-
-Production port is different from development port.
-
-### Launch Agent
-
-Create `/Users/_username_/Library/LaunchAgents/com._username_.memorizepronunciation.plist` file in masOS:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-  <dict>
-    <key>Label</key>
-    <string>com._username_.memorizepronunciation</string>
-
-    <key>ProgramArguments</key>
-    <array>
-      <string>/usr/local/bin/node</string>
-      <string>/path/to/your/project/MemorizePronunciation/server.js</string>
-    </array>
-
-    <key>WorkingDirectory</key>
-    <string>/path/to/your/project/MemorizePronunciation</string>
-
-    <key>RunAtLoad</key>
-    <true/>
-
-    <key>StandardOutPath</key>
-    <string>/tmp/memorizepronunciation.log</string>
-
-    <key>StandardErrorPath</key>
-    <string>/tmp/memorizepronunciation-error.log</string>
-  </dict>
-</plist>
-```
-
-### Load and unload app in Terminal
-
-Run in Terminal:
-
-```bash
-launchctl list | grep memorizepronunciation
-```
-
-You should see a line with your label, e.g.:
-
-```bash
-1234	0	com._username_.memorizepronunciation
-```
-
-If you don’t see it, try loading it again:
-
-```bash
-launchctl load ~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
-```
-
-Unload the old version if you made changes:
-
-```bash
-launchctl unload ~/Library/LaunchAgents/com._username_.memorizepronunciation.plist
-```
-
-Open `tmp` folder with .log files:
-
-```bash
-open /tmp
-```
+* [Local Server on MacOS](./docs/README-SERVER-MACOS.md)
