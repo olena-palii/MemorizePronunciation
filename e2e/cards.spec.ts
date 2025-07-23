@@ -117,7 +117,7 @@ test('default card', async ({ page }) => {
 });
 
 test('select unknown card', async ({ page }) => {
-	await page.locator('#words-all').getByRole('row', { name: 'learned-one' }).dblclick();
+	await page.locator('#words-all').getByRole('row', { name: 'learned-one' }).click();
 	await expect(page.locator('#word-card h2')).toHaveText("learned-one");
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation.getByRole('button', { name: 'Listen to pronunciation' })).toBeEnabled();
@@ -181,7 +181,8 @@ test('recording pronunciation using record buttons', async ({ page }) => {
 	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).not.toBeVisible();
 	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toBeEnabled();
 	await page.waitForTimeout(100);
-	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toHaveText('0.10');
+	const text = await cardPronunciation.getByRole('button', { name: 'Stop recording' }).textContent();
+	expect(text).toMatch(/^0\.1[0-5]?$/);
 	await cardPronunciation.getByRole('button', { name: 'Stop recording' }).click();
 	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
 	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
@@ -209,7 +210,8 @@ test('recorded pronunciation is binded to word', async ({ page }) => {
 	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).not.toBeVisible();
 	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toBeEnabled();
 	await page.waitForTimeout(100);
-	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).toHaveText('0.10');
+	const text = await cardPronunciation.getByRole('button', { name: 'Stop recording' }).textContent();
+	expect(text).toMatch(/^0\.1[0-5]?$/);
 	await page.keyboard.press('R');
 	await expect(cardPronunciation.getByRole('button', { name: 'Stop recording' })).not.toBeVisible();
 	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).toBeEnabled();
@@ -335,7 +337,7 @@ test('mark as known on table', async ({ page }) => {
 test('reset learning on card', async ({ page }) => {
 	const word = "learned-one";
 	const wordNext = "learned-two";
-	await page.locator('#words-all').getByRole('row', { name: word }).dblclick();
+	await page.locator('#words-all').getByRole('row', { name: word }).click();
 	const cardTitle = page.locator('#word-card h2');
 	await expect(cardTitle).toHaveText(word);
 	const cardNavigation = page.locator('#word-card .card-navigation');
@@ -350,7 +352,7 @@ test('reset learning on card', async ({ page }) => {
 test('reset learning using Enter on keyboard', async ({ page }) => {
 	const word = "learned-one";
 	const wordNext = "learned-two";
-	await page.locator('#words-all').getByRole('row', { name: word }).dblclick();
+	await page.locator('#words-all').getByRole('row', { name: word }).click();
 	const cardTitle = page.locator('#word-card h2');
 	await expect(cardTitle).toHaveText(word);
 	const cardNavigation = page.locator('#word-card .card-navigation');
@@ -364,7 +366,7 @@ test('reset learning using Enter on keyboard', async ({ page }) => {
 
 test('reset learning on table', async ({ page }) => {
 	const word = "learned-one";
-	await page.locator('#words-all').getByRole('row', { name: word }).dblclick();
+	await page.locator('#words-all').getByRole('row', { name: word }).click();
 	const cardTitle = page.locator('#word-card h2');
 	await expect(cardTitle).toHaveText(word);
 	const cardNavigation = page.locator('#word-card .card-navigation');

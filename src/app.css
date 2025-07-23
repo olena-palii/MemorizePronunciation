@@ -3,6 +3,6 @@
 
 @layer components {
   .top-container {
-    @apply w-full h-full max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-4rem)] flex flex-col items-center gap-4 p-4;
+    @apply w-full h-full max-h-[calc(100vh-12rem)] lg:max-h-[calc(100vh-4rem)] flex flex-col items-center gap-4 p-4;
   }
 }
