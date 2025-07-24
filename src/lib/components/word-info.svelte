@@ -20,26 +20,45 @@
     });
 </script>
 
-<button class="btn btn-rounded btn-ghost tooltip tooltip-bottom" aria-label="Open word dictionary info" disabled={!word.hasDictionaryInfo} onclick={() => (document.getElementById('my_modal_2') as HTMLDialogElement)?.showModal()}>
+<button class="btn btn-rounded btn-ghost tooltip tooltip-bottom" aria-label="Open word dictionary info" onclick={() => (document.getElementById('dictionary-info') as HTMLDialogElement)?.showModal()}>
     <WordInfoIcon />
 </button>
-<dialog id="my_modal_2" class="modal">
-    <div class="modal-box">
-        <h3 class="text-lg font-bold">{word.word}</h3>
-        <p class="py-4">{word.transcriptions.join(", ")}</p>
-        {#if word.hasDictionaryInfo}
-            {#each word.meanings as meaning}
-                <div class="meaning">
-                    <p class="part-of-speech font-bold">{meaning.partOfSpeech}</p>
-                    {#each meaning.definitions as definition}
-                        {#if definition && definition.example}
-                            <p class="definition py-4 font-normal">{definition.definition}</p>
-                            <p class="example py-4 font-normal">{definition.example}</p>
-                        {/if}
-                    {/each}
+<dialog id="dictionary-info" class="modal">
+    <div class="modal-box min-h-64 max-h-9/10 overflow-hidden rounded-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-square btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <div class="overflow-y-auto max-h-[calc(90vh-4rem)]" style="scrollbar-width: none;">
+            {#if !word || !word.hasDictionaryInfo}
+                <div class="flex justify-center items-center">
+                    <span class="loading loading-spinner loading-xl"></span>
                 </div>
-            {/each}
-        {/if}
+            {:else}
+                <h3 class="word">{word.word}</h3>
+                <p class="transcriptions font-normal pb-4">
+                    {word.transcriptions.join(" ")}
+                </p>
+                {#if word.hasDictionaryInfo}
+                    {#each word.meanings as meaning}
+                        <div class="meaning pb-4">
+                            <p class="part-of-speech">{meaning.partOfSpeech}</p>
+                            <ul class="list bg-base-100 rounded-box shadow-md">
+                                {#each meaning.definitions as definition}
+                                    <li class="definition list-row font-normal p-1">
+                                        <span>
+                                            {definition.definition}
+                                            {#if definition.example}
+                                                <span class="example font-normal italic"> ({definition.example})</span>
+                                            {/if}
+                                        </span>
+                                    </li>
+                                {/each}
+                            </ul>
+                        </div>
+                    {/each}
+                {/if}
+            {/if}
+        </div>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
