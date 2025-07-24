@@ -29,8 +29,6 @@ function reloadServerIfNeeded() {
             console.log(`[${new Date().toISOString()}]: Restarting server with new certificate...`);
             createServer();
         });
-    } else {
-        console.log(`[${new Date().toISOString()}]: Certificate still valid. No action taken.`);
     }
 }
 
