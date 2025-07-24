@@ -24,7 +24,7 @@
     <WordInfoIcon />
 </button>
 <dialog id="dictionary-info" class="modal">
-    <div class="modal-box min-h-64 max-h-9/10 overflow-hidden rounded-box">
+    <div class="modal-box text-xl font-bold min-h-64 max-h-9/10 overflow-hidden rounded-box">
         <form method="dialog">
             <button class="btn btn-sm btn-square btn-ghost absolute right-2 top-2">✕</button>
         </form>
