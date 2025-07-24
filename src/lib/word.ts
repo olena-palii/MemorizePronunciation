@@ -1,13 +1,16 @@
 // Copyright 2025 Olena Palii
 // SPDX-License-Identifier: Apache-2.0
 
-import type { WordDto } from '$lib';
+import type { WordDto, DictionaryDto, MeaningDto } from '$lib';
 
 export class Word {
     id?: number;
     private _word: string = '';
     private _created: Date = new Date();
     private _learned?: Date;
+    transcriptions: string[] = [];
+    meanings: MeaningDto[] = [];
+
 
     constructor(word: WordDto) {
         this.id = word.id;
@@ -107,6 +110,17 @@ export class Word {
         if (other instanceof Word) return this.word === other.word;
         if (typeof other === 'object' && 'word' in other) return this.word === other.word;
         return false;
+    }
+
+    addDictionaryInfo(dictionaries: DictionaryDto[]): void {
+        for (const dictionary of dictionaries) {
+            this.meanings = [...this.meanings, ...dictionary.meanings];
+            this.transcriptions = [...this.transcriptions, ...dictionary.phonetics.map(p => p.text).filter(Boolean)];
+        }
+    }
+
+    get hasDictionaryInfo(): boolean {
+        return !!(this.transcriptions && this.transcriptions.length);
     }
 
 }

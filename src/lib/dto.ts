@@ -41,3 +41,20 @@ export interface ToastDto {
     type?: ToastType;
     duration?: number;
 }
+
+export interface DictionaryDto {
+    word: string;
+    phonetics: {
+        audio: string;
+        text: string;
+    }[];
+    meanings: MeaningDto[];
+}
+
+export interface MeaningDto {
+    partOfSpeech: string;
+    definitions: {
+        definition: string;
+        example?: string;
+    }[];
+}
