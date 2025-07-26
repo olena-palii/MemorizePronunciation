@@ -3,7 +3,6 @@
 
 <script lang="ts">
     import { Word, apiDictionary, WordInfoIcon } from "$lib";
-    import type { MeaningDto } from "$lib";
 
     interface Props {
         word: Word;
@@ -15,12 +14,13 @@
         if (word && !word.hasDictionaryInfo) {
             apiDictionary.getDefinition(word.word).then((dictionaries) => {
                 word.addDictionaryInfo(dictionaries);
+                word = word;
             });
         }
     });
 </script>
 
-<button class="btn btn-rounded btn-ghost tooltip tooltip-bottom" aria-label="Open word dictionary info" onclick={() => (document.getElementById('dictionary-info') as HTMLDialogElement)?.showModal()}>
+<button class="btn btn-rounded btn-ghost" aria-label="Open word dictionary info" onclick={() => (document.getElementById('dictionary-info') as HTMLDialogElement)?.showModal()}>
     <WordInfoIcon />
 </button>
 <dialog id="dictionary-info" class="modal">
@@ -61,6 +61,6 @@
         </div>
     </div>
     <form method="dialog" class="modal-backdrop">
-        <button>close</button>
+        <button>Close</button>
     </form>
 </dialog>
