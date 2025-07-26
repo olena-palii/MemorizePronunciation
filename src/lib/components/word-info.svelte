@@ -36,7 +36,7 @@
     }
 </script>
 
-<button class="btn btn-rounded btn-ghost" aria-label="Open word dictionary info" onclick={() => (document.getElementById('dictionary-info') as HTMLDialogElement)?.showModal()}>
+<button class="btn btn-circle btn-ghost" aria-label="Open word dictionary info" onclick={() => (document.getElementById('dictionary-info') as HTMLDialogElement)?.showModal()}>
     <WordInfoIcon />
 </button>
 <dialog id="dictionary-info" class="modal">
