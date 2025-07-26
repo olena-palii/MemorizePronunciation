@@ -30,7 +30,7 @@
         </form>
         <div class="overflow-y-auto max-h-[calc(90vh-4rem)]" style="scrollbar-width: none;">
             {#if !word || !word.hasDictionaryInfo}
-                <div class="flex justify-center items-center">
+                <div class="flex justify-center items-center min-h-64">
                     <span class="loading loading-spinner loading-xl"></span>
                 </div>
             {:else}
