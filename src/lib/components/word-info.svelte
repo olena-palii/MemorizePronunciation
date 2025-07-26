@@ -2,6 +2,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 
 <script lang="ts">
+    import { onMount } from "svelte";
     import { Word, apiDictionary, WordInfoIcon } from "$lib";
 
     interface Props {
@@ -9,6 +10,13 @@
     }
 
     let { word = $bindable() }: Props = $props();
+
+    onMount(() => {
+        document.addEventListener("keydown", handleKeydown);
+        return () => {
+            document.removeEventListener("keydown", handleKeydown);
+        };
+    });
 
     $effect(() => {
         if (word && !word.hasDictionaryInfo) {
@@ -18,6 +26,14 @@
             });
         }
     });
+
+    function handleKeydown(event: KeyboardEvent) {
+        if (event.key === "i" || event.key === "I") {
+            (
+                document.getElementById("dictionary-info") as HTMLDialogElement
+            )?.showModal();
+        }
+    }
 </script>
 
 <button class="btn btn-rounded btn-ghost" aria-label="Open word dictionary info" onclick={() => (document.getElementById('dictionary-info') as HTMLDialogElement)?.showModal()}>
@@ -35,8 +51,8 @@
                 </div>
             {:else}
                 <h3 class="word">{word.word}</h3>
-                <p class="transcriptions font-normal pb-4">
-                    {word.transcriptions.join(" ")}
+                <p class="phonetics font-normal pb-4">
+                    {word.phonetics.join(" ")}
                 </p>
                 {#if word.hasDictionaryInfo}
                     {#each word.meanings as meaning}

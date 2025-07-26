@@ -8,8 +8,9 @@ export class Word {
     private _word: string = '';
     private _created: Date = new Date();
     private _learned?: Date;
-    transcriptions: string[] = [];
-    meanings: MeaningDto[] = [];
+    private _phonetics: string[] = [];
+    private _meanings: MeaningDto[] = [];
+    private _addedDictionaryInfo: boolean = false;
 
 
     constructor(word: WordDto) {
@@ -112,15 +113,37 @@ export class Word {
         return false;
     }
 
+    get phonetics(): string[] {
+        if(this._addedDictionaryInfo && !this._phonetics.length) return ["[no phonetic found]"];
+        return this._phonetics;
+    }
+
+    set phonetics(data: string[]) {
+        data = data.filter(Boolean);
+        data = data.filter(d => d.trim() !== '');
+        this._phonetics = Array.from(new Set(data));
+    }
+
+    get meanings(): MeaningDto[] {
+        if(this._addedDictionaryInfo && !this._meanings.length) return [{ partOfSpeech: "[no meaning found]", definitions: [] }];
+        return this._meanings;
+    }
+
+    set meanings(data: MeaningDto[]) {
+        this._meanings = data.filter(m => m.partOfSpeech && m.definitions.length > 0);
+    }
+
     addDictionaryInfo(dictionaries: DictionaryDto[]): void {
         for (const dictionary of dictionaries) {
             this.meanings = [...this.meanings, ...dictionary.meanings];
-            this.transcriptions = [...this.transcriptions, ...dictionary.phonetics.map(p => p.text).filter(Boolean)];
+            this.phonetics = [...this.phonetics, ...dictionary.phonetics.map(p => p.text)];
         }
+        this._addedDictionaryInfo = true;
     }
 
     get hasDictionaryInfo(): boolean {
-        return !!(this.transcriptions && this.transcriptions.length);
+        if(this._addedDictionaryInfo) return true;
+        return !!(this.phonetics.length || this.meanings.length);
     }
 
 }
