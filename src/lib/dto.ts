@@ -42,19 +42,17 @@ export interface ToastDto {
     duration?: number;
 }
 
-export interface DictionaryDto {
+export interface DictionaryapiDto {
     word: string;
     phonetics: {
         audio: string;
         text: string;
     }[];
-    meanings: MeaningDto[];
-}
-
-export interface MeaningDto {
-    partOfSpeech: string;
-    definitions: {
-        definition: string;
-        example?: string;
+    meanings: {
+        partOfSpeech: string;
+        definitions: {
+            definition: string;
+            example?: string;
+        }[];
     }[];
-}
+};

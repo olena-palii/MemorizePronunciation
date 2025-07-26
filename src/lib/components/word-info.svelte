@@ -3,7 +3,7 @@
 
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Word, apiDictionary, WordInfoIcon, WordListenMiniIcon, textToSpeech } from "$lib";
+    import { Word, apiDictionaryapi, WordInfoIcon, WordListenMiniIcon, textToSpeech } from "$lib";
 
     interface Props {
         word: Word;
@@ -18,25 +18,37 @@
         };
     });
 
-    $effect(() => {
-        if (word && !word.hasDictionaryInfo) {
-            apiDictionary.getDefinition(word.word).then((dictionaries) => {
-                word.addDictionaryInfo(dictionaries);
-                word = word;
-            });
+    function isLoaded(): boolean {
+        if (word?.dictionary.loaded) return true;
+        if(word?.dictionary.phonetics.length || word?.dictionary.meanings.length) return true;
+        return false;
+    }
+
+    async function loadWordInfo(): Promise<void> {
+        if (!isLoaded()) {
+            const info =  await apiDictionaryapi.getWord(word.word);
+            word.dictionary.addFromDictionaryapi(info);
+            word = word;
         }
+    }
+
+    async function showModal(): Promise<void> {
+        const dialog = document.getElementById("dictionary-info") as HTMLDialogElement;
+        dialog.showModal();
+    }
+
+    $effect(() => {
+        if (!isLoaded()) loadWordInfo();
     });
 
     function handleKeydown(event: KeyboardEvent) {
         if (event.key === "i" || event.key === "I") {
-            (
-                document.getElementById("dictionary-info") as HTMLDialogElement
-            )?.showModal();
+            showModal();
         }
     }
 </script>
 
-<button class="btn btn-circle btn-ghost" aria-label="Open word dictionary info" onclick={() => (document.getElementById('dictionary-info') as HTMLDialogElement)?.showModal()}>
+<button class="btn btn-circle btn-ghost" aria-label="Open word dictionary info" onclick={showModal}>
     <WordInfoIcon />
 </button>
 <dialog id="dictionary-info" class="modal">
@@ -45,17 +57,23 @@
             <button class="btn btn-sm btn-square btn-ghost absolute right-2 top-2">✕</button>
         </form>
         <div class="overflow-y-auto max-h-[calc(90vh-4rem)]" style="scrollbar-width: none;">
-            {#if !word || !word.hasDictionaryInfo}
+            {#if !isLoaded()}
                 <div class="flex justify-center items-center min-h-64">
                     <span class="loading loading-spinner loading-xl"></span>
                 </div>
             {:else}
                 <h3 class="word">{word.word} <button class="btn btn-circle btn-ghost" aria-label="Listen to pronunciation" onclick={() => textToSpeech(word.word)}><WordListenMiniIcon /></button></h3>
-                <p class="phonetics font-normal pb-4">
-                    {word.phonetics.join(" ")}
-                </p>
-                {#if word.hasDictionaryInfo}
-                    {#each word.meanings as meaning}
+                {#if word.dictionary.phonetics.length === 0}
+                    <p class="meaning font-normal pb-4">[no phonetic found]</p>
+                {:else}
+                    <p class="phonetics font-normal pb-4">
+                        {word.dictionary.phonetics.join(" ")}
+                    </p>
+                {/if}
+                {#if word.dictionary.meanings.length === 0}
+                    <p class="meaning font-normal pb-4">[no definition found]</p>
+                {:else}
+                    {#each word.dictionary.meanings as meaning}
                         <div class="meaning pb-4">
                             <p class="part-of-speech">{meaning.partOfSpeech}</p>
                             <ul class="list bg-base-100 rounded-box shadow-md">

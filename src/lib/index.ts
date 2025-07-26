@@ -5,12 +5,13 @@
 
 // Types
 export { Word } from "./word";
-export type { WordDto, apiDto, SaveStatisticsDto, DeleteStatisticsDto, ToastDto, ToastType, DictionaryDto, MeaningDto } from "./dto";
+export { Dictionary } from "./dictionary";
+export type { WordDto, apiDto, SaveStatisticsDto, DeleteStatisticsDto, ToastDto, ToastType, DictionaryapiDto } from "./dto";
 export { Toast } from "./toast";
 
 // API
 export * as apiWords from "./api/api-words";
-export * as apiDictionary from "./api/api-dictionary";
+export * as apiDictionaryapi from "./api/api-dictionaryapi";
 
 // Utils
 export { textToSpeech, startRecordingAudio, stopRecordingAudio, playRecordedAudio } from "./speech";
