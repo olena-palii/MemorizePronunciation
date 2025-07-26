@@ -3,7 +3,7 @@
 
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Word, apiDictionary, WordInfoIcon } from "$lib";
+    import { Word, apiDictionary, WordInfoIcon, WordListenMiniIcon, textToSpeech } from "$lib";
 
     interface Props {
         word: Word;
@@ -50,7 +50,7 @@
                     <span class="loading loading-spinner loading-xl"></span>
                 </div>
             {:else}
-                <h3 class="word">{word.word}</h3>
+                <h3 class="word">{word.word} <button class="btn btn-circle btn-ghost" aria-label="Listen to pronunciation" onclick={() => textToSpeech(word.word)}><WordListenMiniIcon /></button></h3>
                 <p class="phonetics font-normal pb-4">
                     {word.phonetics.join(" ")}
                 </p>
