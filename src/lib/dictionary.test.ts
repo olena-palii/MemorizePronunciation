@@ -9,6 +9,7 @@ test('add from dictionaryapi', () => {
     const dictionary = new Dictionary();
     const mockData: DictionaryapiDto[] = [
         {
+            phonetic: '/waʊnd/',
             phonetics: [{ text: 'ˈwɜːrd' }],
             meanings: [
                 {
@@ -41,7 +42,8 @@ test('add from dictionaryapi', () => {
 
     dictionary.addFromDictionaryapi(mockData);
 
-    expect(dictionary.phonetics.length).toBe(2);
+    expect(dictionary.phonetics.length).toBe(3);
+    expect(dictionary.phonetics).toContain('/waʊnd/');
     expect(dictionary.phonetics).toContain('ˈwɜːrd');
     expect(dictionary.phonetics).toContain('ˈother');
     expect(dictionary.meanings.length).toBe(4);

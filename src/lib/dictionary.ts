@@ -22,6 +22,9 @@ export class Dictionary {
 
     addFromDictionaryapi(dictionaries: DictionaryapiDto[]): void {
         for (const dictionary of dictionaries) {
+            if (dictionary.phonetic) {
+                this.addPhonetic(dictionary.phonetic);
+            }
             if (dictionary.phonetics && dictionary.phonetics.length > 0) {
                 for (const phonetic of dictionary.phonetics) this.addPhonetic(phonetic.text);
             }

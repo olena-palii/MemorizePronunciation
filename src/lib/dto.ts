@@ -43,6 +43,8 @@ export interface ToastDto {
 }
 
 export interface DictionaryapiDto {
+    word?: string;
+    phonetic?: string;
     phonetics?: {
         text?: string;
     }[];
