@@ -20,7 +20,7 @@ afterEach(() => {
     dbWords.__testOnly_clearTable();
 });
 
-test('get dictionaries of word', () => {
+test('get all dictionaries of word', () => {
     const wordId: number = dbWords.getWordByText('word-one')!.id!;
     const dictionaries = dbDictionary.getDictionary(wordId);
     expect(dictionaries).toBeDefined();
@@ -29,6 +29,15 @@ test('get dictionaries of word', () => {
     expect(dictionaries[0].info).toBe('dictionary-1');
     expect(dictionaries[1].source).toBe('source-2');
     expect(dictionaries[1].info).toBe('dictionary-2');
+});
+
+test('get one dictionary of word', () => {
+    const wordId: number = dbWords.getWordByText('word-one')!.id!;
+    const dictionaries = dbDictionary.getDictionary(wordId, 'source-1');
+    expect(dictionaries).toBeDefined();
+    expect(dictionaries.length).toBe(1);
+    expect(dictionaries[0].source).toBe('source-1');
+    expect(dictionaries[0].info).toBe('dictionary-1');
 });
 
 test('get empty dictionaries for non-existing word', () => {
@@ -40,6 +49,13 @@ test('get empty dictionaries for non-existing word', () => {
 test('get empty dictionaries for word without dictionaries', () => {
     const wordId: number = dbWords.getWordByText('word-three')!.id!;
     const dictionaries = dbDictionary.getDictionary(wordId);
+    expect(dictionaries).toBeDefined();
+    expect(dictionaries.length).toBe(0);
+});
+
+test('get empty dictionaries for word with non-existing source', () => {
+    const wordId: number = dbWords.getWordByText('word-two')!.id!;
+    const dictionaries = dbDictionary.getDictionary(wordId, 'source-1');
     expect(dictionaries).toBeDefined();
     expect(dictionaries.length).toBe(0);
 });
