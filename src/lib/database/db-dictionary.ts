@@ -4,11 +4,11 @@
 import db from './db';
 import type { DictionaryDbDto } from '$lib';
 
-export function getDictionary(word_id: number, source: string): string {
+export function getDictionary(word_id: number, source: string): string | undefined {
     const query = db.prepare(`SELECT id, source, info FROM dictionary WHERE word_id = ? AND source = ? ORDER BY id ASC`);
     const result = query.all(word_id, source) as DictionaryDbDto[];
-    if( result.length === 0) return "";
-    return result[0].info ?? "";
+    if(result.length === 0) return undefined;
+    return result[0].info ?? undefined;
 }
 
 export function getDictionaries(word_id: number): DictionaryDbDto[] {
