@@ -56,3 +56,9 @@ export interface DictionaryapiDto {
         }[];
     }[];
 };
+
+export interface DictionaryDbDto {
+    id: number;
+    source: string;
+    info: string;
+};

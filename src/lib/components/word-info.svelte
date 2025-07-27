@@ -3,7 +3,8 @@
 
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Word, apiDictionaryapi, WordInfoIcon, XCloseIcon, WordListenMiniIcon, textToSpeech } from "$lib";
+    import { Word, apiDictionary, apiDictionaryapi, WordInfoIcon, XCloseIcon, WordListenMiniIcon, textToSpeech } from "$lib";
+    import type { DictionaryapiDto } from "$lib";
 
     interface Props {
         word: Word;
@@ -24,9 +25,19 @@
         return false;
     }
 
+    async function getFromDictionary<T>(word: Word, source: string, getWordFromAPI: (word: string) => Promise<T>): Promise<T> {
+        const data = await apiDictionary.getDictionary(word.id!, source);
+        let info: T | undefined = data === "" ? undefined : data as T;
+        if(!info || (Array.isArray(info) && info.length === 0)) {
+            info = await getWordFromAPI(word.word);
+            await apiDictionary.saveDictionary(word.id!, source, JSON.stringify(info));
+        }
+        return info;
+    }
+
     async function loadWordInfo(): Promise<void> {
         if (!isLoaded()) {
-            const info =  await apiDictionaryapi.getWord(word.word);
+            const info = await getFromDictionary<DictionaryapiDto[]>(word, "dictionaryapi", apiDictionaryapi.getWord);
             word.dictionary.addFromDictionaryapi(info);
             word = word;
         }

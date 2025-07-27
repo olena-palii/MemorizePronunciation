@@ -22,8 +22,9 @@ function initializeDatabase() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         word_id INTEGER NOT NULL,
         source TEXT NOT NULL,
-        info TEXT NOT NULL,
-        FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
+        info TEXT,
+        FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE,
+        UNIQUE(word_id, source)
     );
   `);
 }
