@@ -11,7 +11,14 @@ export async function api<T>(dto: apiDto): Promise<T | undefined> {
             addToast({ message: dto.errorMessage ?? 'Unexpected error happened', type: 'error' });
             return undefined;
         }
-        return await response.json() as T;
+        const responseText = await response.text();
+        if (responseText === '') return undefined;
+        try {
+            return JSON.parse(responseText) as T;
+        } catch (err) {
+            addToast({ message: 'Unexpected response format', type: 'error' });
+            return undefined;
+        }
     } catch (err) {
         console.error('API Error:', err);
         addToast({ message: 'No internet connection or server unreachable', type: 'error' });
