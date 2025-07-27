@@ -25,12 +25,14 @@
         return false;
     }
 
-    async function getFromDictionary<T>(word: Word, source: string, getWordFromAPI: (word: string) => Promise<T>): Promise<T> {
+    async function getFromDictionary<T>(word: Word, source: string, getWordFromAPI: (word: string) => Promise<T | undefined>): Promise<T | undefined> {
         const data = await apiDictionary.getDictionary(word.id!, source);
         let info: T | undefined = data === "" ? undefined : data as T;
         if(!info || (Array.isArray(info) && info.length === 0)) {
             info = await getWordFromAPI(word.word);
-            await apiDictionary.saveDictionary(word.id!, source, JSON.stringify(info));
+            if((info && !Array.isArray(info)) || (info && Array.isArray(info) && info.length > 0)) {
+                await apiDictionary.saveDictionary(word.id!, source, JSON.stringify(info));
+            }
         }
         return info;
     }

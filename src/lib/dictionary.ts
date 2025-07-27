@@ -20,7 +20,9 @@ export class Dictionary {
         }
     }
 
-    addFromDictionaryapi(dictionaries: DictionaryapiDto[]): void {
+    addFromDictionaryapi(dictionaries?: DictionaryapiDto[]): void {
+        this.loaded = true;
+        if(!dictionaries || dictionaries.length === 0) return;
         for (const dictionary of dictionaries) {
             if (dictionary.phonetic) {
                 this.addPhonetic(dictionary.phonetic);
@@ -38,7 +40,6 @@ export class Dictionary {
                 }
             }
         }
-        this.loaded = true;
     }
 }
 
