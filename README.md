@@ -9,7 +9,6 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Delete a word
 * Listen to the pronunciation of any word
 * Mark words as known or reset learning with a checkbox
-* Copy words directly from any table
 
 <p align="center">
 <img src="docs/image/home.gif" alt="Home page" height="600">
@@ -22,10 +21,14 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Record your pronunciation and listen to the recorded audio
 * Mark words as known or reset learning
 * Navigate using the keyboard
-* Copy words directly from the table
+* View word dictionary info
 
 <p align="center">
 <img src="docs/image/cards.gif" alt="Cards page" height="600">
+</p>
+
+<p align="center">
+<img src="docs/image/dictionary.png" alt="Word dictionary info" height="600">
 </p>
 
 ## Create Page
@@ -42,6 +45,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 
 * Switch between light and dark themes
 * Mobile-friendly responsive design
+* Copy all displayed words from any table using copy icon near "Words" header
 
 <p align="center">
 <img src="docs/image/mobile.png" alt="Mobile view with dark theme" height="600">
@@ -91,7 +95,7 @@ Alternative: [Manually Generate a Certificate for a Local IP](./docs/README-CERT
 
 ## Hostname as URL
 
-Set the hostname of your computer. For example, on macOS, you can change it under  
+Set the hostname of your computer. For example, on macOS, you can change it under
 
 * System Settings > Sharing > Local Hostname
 

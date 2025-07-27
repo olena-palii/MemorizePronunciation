@@ -5,11 +5,14 @@
 
 // Types
 export { Word } from "./word";
-export type { WordDto, apiDto, SaveStatisticsDto, DeleteStatisticsDto, ToastDto, ToastType } from "./dto";
+export { Dictionary } from "./dictionary";
+export type { WordDto, apiDto, SaveStatisticsDto, DeleteStatisticsDto, ToastDto, ToastType, DictionaryDbDto, DictionaryapiDto } from "./dto";
 export { Toast } from "./toast";
 
 // API
 export * as apiWords from "./api/api-words";
+export * as apiDictionary from "./api/api-dictionary";
+export * as apiDictionaryapi from "./api/api-dictionaryapi";
 
 // Utils
 export { textToSpeech, startRecordingAudio, stopRecordingAudio, playRecordedAudio } from "./speech";
@@ -23,6 +26,7 @@ export { default as AddWord } from './components/add-word.svelte';
 export { default as Theme } from './components/theme.svelte';
 export { default as CopyButton } from './components/copy-button.svelte';
 export { default as ToastAlert } from './components/toast-alert.svelte';
+export { default as WordInfo } from './components/word-info.svelte';
 
 // Icons
 export { default as NavHomeIcon } from './icons/nav-home.svelte';
@@ -32,7 +36,9 @@ export { default as ThemeLightIcon } from './icons/theme-light.svelte';
 export { default as ThemeDarkIcon } from './icons/theme-dark.svelte';
 export { default as WordDeleteIcon } from './icons/word-delete.svelte';
 export { default as WordListenIcon } from './icons/word-listen.svelte';
+export { default as WordListenMiniIcon } from './icons/word-listen-mini.svelte';
 export { default as WordRecordIcon } from './icons/word-record.svelte';
 export { default as WordPlayIcon } from './icons/word-play.svelte';
 export { default as CopyIcon } from './icons/copy.svelte';
-export { default as ToastCloseIcon } from './icons/toast-close.svelte';
+export { default as XCloseIcon } from './icons/x-close.svelte';
+export { default as WordInfoIcon } from './icons/word-info.svelte';

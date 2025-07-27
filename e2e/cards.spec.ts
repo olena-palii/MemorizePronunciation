@@ -74,12 +74,40 @@ async function mockResetLearningAPI(page) {
 	});
 }
 
+const customDictionaryapi= [{"word":"unknown-one","phonetic":"/ˈphonetic1/","phonetics":[{"text":"/ˈphonetic2/"},{"text":"/ˈphonetic3/"}],"meanings":[{"partOfSpeech":"part1","definitions":[{"definition":"definition1"},{"definition":"definition2"}]},{"partOfSpeech":"part2","definitions":[{"definition":"definition3","example":"example3"}]}]}, {"word":"unknown-one","phonetics":[{"text":"/ˈphonetic4/"}],"meanings":[{"partOfSpeech":"part3","definitions":[{"definition":"definition4"}]}]}];
+
+async function mockDictionaryAPI(page) {
+	await page.route('*/**/api/words/*/dictionary/dictionaryapi', async route => {
+		await route.fulfill({
+			body: JSON.stringify(customDictionaryapi)
+		});
+	});
+}
+
+async function mockEmptyDictionaryAPI(page) {
+	await page.route('*/**/api/words/*/dictionary/dictionaryapi', async route => {
+		await route.fulfill({
+			status: 204,
+			body: JSON.stringify([])
+		});
+	});
+}
+
+async function mockDictionaryapiAPI(page) {
+	await page.route('https://api.dictionaryapi.dev/api/v2/entries/en/*', async route => {
+		await route.fulfill({
+			body: JSON.stringify(customDictionaryapi)
+		});
+	});
+}
+
 // #endregion
 
 // #region Tests
 
 test.beforeEach(async ({ page, context }) => {
 	await mockWordsAPI(page);
+	await mockDictionaryAPI(page);
 	await context.grantPermissions(['microphone', 'clipboard-read', 'clipboard-write']);
 	await mockAudioRecording(page);
 	await addSpyFlagsForAudioPlay(page);
@@ -384,6 +412,87 @@ test('copy words from table with all words', async ({ page }) => {
 	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
 	expect(clipboardContent).toBe("unknown-one\nunknown-two\nlearned-one\nlearned-two");
 	await expect(page.locator('.toast .alert-success').last()).toHaveText('Copied to clipboard');
+});
+
+test('word info from db', async ({ page }) => {
+	await page.getByRole('button', { name: 'Open word dictionary info' }).click();
+	await expect(page.locator('#dictionary-info')).toBeVisible();
+	await expect(page.locator('#dictionary-info h3')).toHaveText("unknown-one");
+	await expect(page.locator('#dictionary-info .phonetics')).toHaveText("/ˈphonetic1/ /ˈphonetic2/ /ˈphonetic3/ /ˈphonetic4/");
+	
+	const meanings = page.locator('#dictionary-info .meaning');
+	await expect(meanings).toHaveCount(3);
+
+	await expect(meanings.nth(0).locator('.part-of-speech')).toHaveText("part1");
+	await expect(meanings.nth(0).locator('.definition')).toHaveCount(2);
+	await expect(meanings.nth(0).locator('.example')).toHaveCount(0);
+	await expect(meanings.nth(0).locator('.definition').nth(0)).toHaveText("definition1");
+	await expect(meanings.nth(0).locator('.definition').nth(1)).toHaveText("definition2");
+
+	await expect(meanings.nth(1).locator('.part-of-speech')).toHaveText("part2");
+	await expect(meanings.nth(1).locator('.definition')).toHaveCount(1);
+	await expect(meanings.nth(1).locator('.example')).toHaveCount(1);
+	await expect(meanings.nth(1).locator('.definition')).toHaveText("definition3 (example3)");
+	await expect(meanings.nth(1).locator('.example')).toHaveText("(example3)");
+
+	await expect(meanings.nth(2).locator('.part-of-speech')).toHaveText("part3");
+	await expect(meanings.nth(2).locator('.definition')).toHaveCount(1);
+	await expect(meanings.nth(2).locator('.example')).toHaveCount(0);
+	await expect(meanings.nth(2).locator('.definition').nth(0)).toHaveText("definition4");
+});
+
+test('word info from dictionaryapi', async ({ page }) => {
+	await mockWordsAPI(page);
+	await mockEmptyDictionaryAPI(page);
+	await mockDictionaryapiAPI(page);
+	await page.reload();
+	
+	await page.getByRole('button', { name: 'Open word dictionary info' }).click();
+	await expect(page.locator('#dictionary-info')).toBeVisible();
+	await expect(page.locator('#dictionary-info h3')).toHaveText("unknown-one");
+	await expect(page.locator('#dictionary-info .phonetics')).toHaveText("/ˈphonetic1/ /ˈphonetic2/ /ˈphonetic3/ /ˈphonetic4/");
+	
+	const meanings = page.locator('#dictionary-info .meaning');
+	await expect(meanings).toHaveCount(3);
+
+	await expect(meanings.nth(0).locator('.part-of-speech')).toHaveText("part1");
+	await expect(meanings.nth(0).locator('.definition')).toHaveCount(2);
+	await expect(meanings.nth(0).locator('.example')).toHaveCount(0);
+	await expect(meanings.nth(0).locator('.definition').nth(0)).toHaveText("definition1");
+	await expect(meanings.nth(0).locator('.definition').nth(1)).toHaveText("definition2");
+
+	await expect(meanings.nth(1).locator('.part-of-speech')).toHaveText("part2");
+	await expect(meanings.nth(1).locator('.definition')).toHaveCount(1);
+	await expect(meanings.nth(1).locator('.example')).toHaveCount(1);
+	await expect(meanings.nth(1).locator('.definition')).toHaveText("definition3 (example3)");
+	await expect(meanings.nth(1).locator('.example')).toHaveText("(example3)");
+
+	await expect(meanings.nth(2).locator('.part-of-speech')).toHaveText("part3");
+	await expect(meanings.nth(2).locator('.definition')).toHaveCount(1);
+	await expect(meanings.nth(2).locator('.example')).toHaveCount(0);
+	await expect(meanings.nth(2).locator('.definition').nth(0)).toHaveText("definition4");
+});
+
+test('close word info', async ({ page }) => {
+	await page.getByRole('button', { name: 'Open word dictionary info' }).click();
+	await expect(page.locator('#dictionary-info')).toBeVisible();
+
+	await page.getByRole('button', { name: 'Close word dictionary info' }).click();
+	await expect(page.locator('#dictionary-info')).not.toBeVisible();
+});
+
+test('empty word info', async ({ page }) => {
+	await mockWordsAPI(page);
+	await mockEmptyDictionaryAPI(page);
+	await page.reload();
+
+	await page.getByRole('button', { name: 'Open word dictionary info' }).click();
+	await expect(page.locator('#dictionary-info')).toBeVisible();
+
+	await expect(page.locator('#dictionary-info h3')).toHaveText("unknown-one");
+	await expect(page.locator('#dictionary-info .phonetics')).toContainText("[no phonetic found]");
+	await expect(page.locator('#dictionary-info .meaning')).toHaveCount(1);
+	await expect(page.locator('#dictionary-info .meaning')).toHaveText("[no definition found]");
 });
 
 test('500 error handling on mark as known', async ({ page }) => {

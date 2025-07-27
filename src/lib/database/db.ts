@@ -17,6 +17,16 @@ function initializeDatabase() {
         learned DATE
     );
   `);
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS dictionary (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        word_id INTEGER NOT NULL,
+        source TEXT NOT NULL,
+        info TEXT,
+        FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE,
+        UNIQUE(word_id, source)
+    );
+  `);
 }
 
 initializeDatabase();

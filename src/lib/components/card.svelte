@@ -3,7 +3,7 @@
  
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Word, RecordingButton, WordListenIcon, WordPlayIcon } from "$lib";
+  import { Word, RecordingButton, WordListenIcon, WordPlayIcon, WordInfo } from "$lib";
   import { textToSpeech, playRecordedAudio } from "$lib";
 
   interface Props {
@@ -62,6 +62,9 @@
 </script>
 
 <div class="card flex justify-center w-full max-w-sm bg-base-100 shadow-sm gap-4 p-4" id="word-card">
+  <div class="absolute top-2 right-4">
+      <WordInfo bind:word={word} />
+  </div>
   <h2 class="card-title text-xl font-bold flex justify-center">{word.word}</h2>
   <div class="card-pronunciation flex justify-center gap-8 p-8">
     <button class="btn btn-circle btn-success btn-xl" aria-label="Listen to pronunciation" onclick={() => textToSpeech(word.word)}>

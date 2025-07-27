@@ -1,13 +1,15 @@
 // Copyright 2025 Olena Palii
 // SPDX-License-Identifier: Apache-2.0
 
-import type { WordDto } from '$lib';
+import { Dictionary } from './dictionary';
+import type { WordDto } from './dto';
 
 export class Word {
     id?: number;
     private _word: string = '';
     private _created: Date = new Date();
     private _learned?: Date;
+    dictionary = new Dictionary();
 
     constructor(word: WordDto) {
         this.id = word.id;
@@ -108,5 +110,4 @@ export class Word {
         if (typeof other === 'object' && 'word' in other) return this.word === other.word;
         return false;
     }
-
 }
