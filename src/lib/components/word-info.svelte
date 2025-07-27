@@ -64,7 +64,7 @@
             {:else}
                 <h3 class="word">{word.word} <button class="btn btn-circle btn-ghost" aria-label="Listen to pronunciation" onclick={() => textToSpeech(word.word)}><WordListenMiniIcon /></button></h3>
                 {#if word.dictionary.phonetics.length === 0}
-                    <p class="meaning font-normal pb-4">[no phonetic found]</p>
+                    <p class="phonetics font-normal pb-4">[no phonetic found]</p>
                 {:else}
                     <p class="phonetics font-normal pb-4">
                         {word.dictionary.phonetics.join(" ")}
@@ -94,7 +94,4 @@
             {/if}
         </div>
     </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>Close</button>
-    </form>
 </dialog>
