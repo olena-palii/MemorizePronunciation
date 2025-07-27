@@ -3,7 +3,7 @@
 
 import { test, expect } from 'vitest';
 import { Dictionary } from './dictionary';
-import type { DictionaryapiDto } from '$lib';
+import type { DictionaryapiDto } from './dto';
 
 test('add from dictionaryapi', () => {
     const dictionary = new Dictionary();

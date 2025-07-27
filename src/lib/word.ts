@@ -1,8 +1,8 @@
 // Copyright 2025 Olena Palii
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dictionary } from '$lib';
-import type { WordDto } from '$lib';
+import { Dictionary } from './dictionary';
+import type { WordDto } from './dto';
 
 export class Word {
     id?: number;

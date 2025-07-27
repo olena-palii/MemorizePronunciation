@@ -1,7 +1,7 @@
 // Copyright 2025 Olena Palii
 // SPDX-License-Identifier: Apache-2.0
 
-import type { DictionaryapiDto } from '$lib';
+import type { DictionaryapiDto } from './dto';
 
 export class Dictionary {
     phonetics: string[] = [];
