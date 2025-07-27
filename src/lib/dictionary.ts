@@ -22,11 +22,17 @@ export class Dictionary {
 
     addFromDictionaryapi(dictionaries: DictionaryapiDto[]): void {
         for (const dictionary of dictionaries) {
-            for (const phonetic of dictionary.phonetics) this.addPhonetic(phonetic.text);
-            for (const meaning of dictionary.meanings) {
-                const newMeaning = new Meaning(meaning.partOfSpeech);
-                for (const definition of meaning.definitions) newMeaning.addDefinition(definition.definition, definition.example);
-                this.addMeaning(newMeaning);
+            if (dictionary.phonetics && dictionary.phonetics.length > 0) {
+                for (const phonetic of dictionary.phonetics) this.addPhonetic(phonetic.text);
+            }
+            if (dictionary.meanings && dictionary.meanings.length > 0) {
+                for (const meaning of dictionary.meanings) {
+                    const newMeaning = new Meaning(meaning.partOfSpeech);
+                    if (meaning.definitions && meaning.definitions.length > 0) {
+                        for (const definition of meaning.definitions) newMeaning.addDefinition(definition.definition, definition.example);
+                    }
+                    this.addMeaning(newMeaning);
+                }
             }
         }
         this.loaded = true;
@@ -41,7 +47,7 @@ class Meaning {
         this.partOfSpeech = partOfSpeech;
     }
 
-    addDefinition(definition: string, example?: string): void {
+    addDefinition(definition?: string, example?: string): void {
         if (definition) this.definitions.push(new Definition(definition, example));
     }
 }

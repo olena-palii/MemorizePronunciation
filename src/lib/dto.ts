@@ -43,15 +43,13 @@ export interface ToastDto {
 }
 
 export interface DictionaryapiDto {
-    word: string;
-    phonetics: {
-        audio: string;
-        text: string;
+    phonetics?: {
+        text?: string;
     }[];
-    meanings: {
-        partOfSpeech: string;
-        definitions: {
-            definition: string;
+    meanings?: {
+        partOfSpeech?: string;
+        definitions?: {
+            definition?: string;
             example?: string;
         }[];
     }[];
