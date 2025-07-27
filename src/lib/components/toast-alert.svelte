@@ -3,7 +3,7 @@
 
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { toasts, ToastCloseIcon } from "$lib";
+  import { toasts, XCloseIcon } from "$lib";
 
   $: toastList = $toasts;
 
@@ -30,7 +30,7 @@
     <div role="alert" class={alertType(toast.type)} in:fly={{ y: -20, duration: 200 }} out:fly={{ y: -20, duration: 200 }}>
         <span>{toast.message}</span>
         <button class="btn btn-sm btn-ghost !bg-transparent border-none shadow-none hover:text-inherit" aria-label="Close toast" onclick={() => closeToast(toast.id)}>
-            <ToastCloseIcon />
+            <XCloseIcon />
         </button>
     </div>
   {/each}

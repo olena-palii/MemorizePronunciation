@@ -3,7 +3,7 @@
 
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Word, apiDictionaryapi, WordInfoIcon, WordListenMiniIcon, textToSpeech } from "$lib";
+    import { Word, apiDictionaryapi, WordInfoIcon, XCloseIcon, WordListenMiniIcon, textToSpeech } from "$lib";
 
     interface Props {
         word: Word;
@@ -54,7 +54,7 @@
 <dialog id="dictionary-info" class="modal">
     <div class="modal-box text-xl font-bold min-h-64 max-h-8/10 overflow-hidden rounded-box">
         <form method="dialog">
-            <button class="btn btn-sm btn-square btn-ghost absolute right-2 top-2">✕</button>
+            <button class="btn btn-sm btn-square btn-ghost absolute right-2 top-2" aria-label="Close word dictionary info"><XCloseIcon /></button>
         </form>
         <div class="overflow-y-auto max-h-[calc(90vh-4rem)]" style="scrollbar-width: none;">
             {#if !isLoaded()}

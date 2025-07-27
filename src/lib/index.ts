@@ -39,5 +39,5 @@ export { default as WordListenMiniIcon } from './icons/word-listen-mini.svelte';
 export { default as WordRecordIcon } from './icons/word-record.svelte';
 export { default as WordPlayIcon } from './icons/word-play.svelte';
 export { default as CopyIcon } from './icons/copy.svelte';
-export { default as ToastCloseIcon } from './icons/toast-close.svelte';
+export { default as XCloseIcon } from './icons/x-close.svelte';
 export { default as WordInfoIcon } from './icons/word-info.svelte';
