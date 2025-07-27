@@ -76,6 +76,15 @@ test('save dictionary for word with existing dictionaries', () => {
     expect(dictionaries[1].info).toBe('dictionary-5');
 });
 
+test('rewrite dictionary for word with existing dictionary', () => {
+    const wordId: number = dbWords.getWordByText('word-two')!.id!;
+    dbDictionary.saveDictionary(wordId, 'source-3', 'dictionary-6');
+    const dictionaries = dbDictionary.getDictionaries(wordId);
+    expect(dictionaries.length).toBe(1);
+    expect(dictionaries[0].source).toBe('source-3');
+    expect(dictionaries[0].info).toBe('dictionary-6');
+});
+
 test('delete dictionaries when word is deleted', () => {
     const wordId: number = dbWords.getWordByText('word-one')!.id!;
     const dictionariesBefore = dbDictionary.getDictionaries(wordId);
