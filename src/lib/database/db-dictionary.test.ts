@@ -53,7 +53,7 @@ test('get empty dictionaries for word without dictionaries', () => {
 test('get empty dictionaries for word with non-existing source', () => {
     const wordId: number = dbWords.getWordByText('word-two')!.id!;
     const dictionary = dbDictionary.getDictionary(wordId, 'source-1');
-    expect(dictionary).toBe("");
+    expect(dictionary).toBeUndefined();
 });
 
 test('save dictionary for word without dictionaries', () => {
