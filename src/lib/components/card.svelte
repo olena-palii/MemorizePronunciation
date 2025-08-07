@@ -35,15 +35,19 @@
   }
 
   async function markAsLearned() {
-    word.markAsLearned();
-    onSaveWord(word);
-    onNextWord();
+    if(word.id) {
+      word.markAsLearned();
+      onSaveWord(word);
+      onNextWord();
+    }
   }
 
   async function resetLearning() {
-    word.resetLearning();
-    onSaveWord(word);
-    onNextWord();
+    if(word.id) {
+      word.resetLearning();
+      onSaveWord(word);
+      onNextWord();
+    }
   }
 
   function handleKeydown(event: KeyboardEvent) {
