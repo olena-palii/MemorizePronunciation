@@ -73,7 +73,7 @@
   }
 
   function nearestWord(currentIndex: number) {
-    if (currentIndex < words.length - 1) selectWord(words[currentIndex + 1]);
+    if (currentIndex < words.length) selectWord(words[currentIndex]);
     else if (currentIndex > 0) selectWord(words[currentIndex - 1]);
     else selectWord(DEFAULT_WORD);
   }
