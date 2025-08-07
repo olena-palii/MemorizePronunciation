@@ -77,7 +77,7 @@
 <div class="top-container fixed top-16">
   {#if words && selectedWord}
     <Card bind:word={selectedWord} onNextWord={nextWord} onPreviousWord={previousWord} onSaveWord={saveWord}/>
-    <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onRowSelection={selectWord} bind:selected={selectedWord}/>
+    <WordsTable bind:words={words} onSaveWord={saveWord} onDeleteWord={deleteWord} onRowClick={selectWord} bind:selected={selectedWord}/>
     {:else}
       <div class="flex justify-center items-center min-h-screen"> 
         <span class="loading loading-spinner loading-xl"></span>

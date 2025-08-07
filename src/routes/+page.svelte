@@ -3,6 +3,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
+  import { goto } from '$app/navigation';
   import { Word, apiWords, AddWord, WordsTable, addToast } from "$lib";
   import type { WordDto } from "$lib";
   let wordsUnknown: Word[];
@@ -53,13 +54,17 @@
       wordsLearned = wordsLearned.filter((w) => w.id !== word.id);
     }
   }
+
+  async function openCard(word: Word) {
+    goto(`/cards?id=${word.id}`);
+  }
 </script>
 
 <div class="top-container">
   {#if wordsUnknown && wordsLearned}
     <AddWord bind:search={searchValue} onSubmit={addWord} />
-    <WordsTable id="words-unknown" h="h-96" bind:words={wordsUnknown} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
-    <WordsTable id="words-learned" h="h-96" bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} search={searchValue}/>
+    <WordsTable id="words-unknown" h="h-96" bind:words={wordsUnknown} onSaveWord={saveWord} onDeleteWord={deleteWord} onRowDoubleClick={openCard} search={searchValue}/>
+    <WordsTable id="words-learned" h="h-96" bind:words={wordsLearned} onSaveWord={saveWord} onDeleteWord={deleteWord} onRowDoubleClick={openCard} search={searchValue}/>
   {:else}
     <div class="flex justify-center items-center min-h-screen"> 
       <span class="loading loading-spinner loading-xl"></span>

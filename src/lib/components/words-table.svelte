@@ -12,10 +12,11 @@
         selected?: Word;
         onSaveWord: (word: Word) => any;
         onDeleteWord: (word: Word) => any;
-        onRowSelection?: (word: Word) => void;
+        onRowClick?: (word: Word) => void;
+        onRowDoubleClick?: (word: Word) => void;
     }
 
-    let { id = "words-all", h = "max-h-screen", words = $bindable(), search, selected = $bindable(), onSaveWord, onDeleteWord, onRowSelection = () => {} }: Props = $props();
+    let { id = "words-all", h = "max-h-screen", words = $bindable(), search, selected = $bindable(), onSaveWord, onDeleteWord, onRowClick = () => {}, onRowDoubleClick = () => {} }: Props = $props();
 
     let filteredWords = $derived(words.filter(word => word.word.toLowerCase().includes(search??"".toLowerCase())));
     let copyWordsText = $derived(filteredWords.map(word => word.word).join("\n"));
@@ -41,7 +42,7 @@
         </thead>
         <tbody>
         {#each filteredWords as word (word.id)}
-        <tr data-id="{word.id}" class="word-row hover:bg-base-300 {word.id === selected?.id ? 'bg-base-300' : ''}" onclick={() => { onRowSelection(word); }}>
+        <tr data-id="{word.id}" class="word-row hover:bg-base-300 {word.id === selected?.id ? 'bg-base-300' : ''}" onclick={() => { onRowClick(word); }} ondblclick={() => { onRowDoubleClick(word); }}>
             <th>
             <label>
                 <input type="checkbox" class="word-checkbox checkbox" checked={word.isLearned} onchange={() => { word.isLearned = !word.isLearned; onSaveWord(word); }} />
