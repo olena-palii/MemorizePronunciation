@@ -27,6 +27,17 @@
             row?.scrollIntoView({ behavior: "smooth", block: "center" });
         }
     });
+
+    let isDeleting = $state<boolean>(false);
+
+    async function deleteWord(word: Word) {
+        isDeleting = true;
+        try {
+            await onDeleteWord(word);
+        } finally {
+            isDeleting = false;
+        }
+  }
 </script>
 
 <div class={`overflow-x-hidden rounded-box border border-base-content/5 bg-base-100 w-full max-w-xl ${h}`} id={id}>
@@ -56,7 +67,7 @@
             <td class="word-word whitespace-nowrap overflow-hidden text-ellipsis">{word.word}</td>
             <td class="word-period hidden md:table-cell whitespace-nowrap overflow-hidden text-ellipsis">{word.learningPeriod}</td>
             <td>
-                <button class="word-delete btn btn-square" aria-label="Delete word" onclick={() => onDeleteWord(word)}>
+                <button class="word-delete btn btn-square" aria-label="Delete word" disabled={isDeleting} onclick={() => deleteWord(word)}>
                     <WordDeleteIcon />
                 </button>
             </td>
