@@ -17,6 +17,8 @@ export function getDictionaries(word_id: number): DictionaryDbDto[] {
 }
 
 export function saveDictionary(word_id: number, source: string, info: string): void {
+    const wordExists = db.prepare(`SELECT 1 FROM words WHERE id = ?`).get(word_id);
+    if (!wordExists) return;
     const insertQuery = db.prepare(`INSERT OR REPLACE INTO dictionary (word_id, source, info) VALUES (?, ?, ?)`);
     insertQuery.run(word_id, source, info);
 }
