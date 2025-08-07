@@ -9,6 +9,7 @@ Improve your English pronunciation by listening, repeating, and recording yourse
 * Delete a word
 * Listen to the pronunciation of any word
 * Mark words as known or reset learning with a checkbox
+* Double click to open word card on Cards page
 
 <p align="center">
 <img src="docs/image/home.gif" alt="Home page" height="600">
