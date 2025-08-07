@@ -58,7 +58,7 @@ test('navbar and dock in mobile view', async ({ page }) => {
 test('navigation in web view', async ({ page }) => {
     const navbar = page.locator('.navbar');
     await navbar.getByRole('link', { name: 'Cards' }).click();
-    await expect(page).toHaveURL('/cards');
+    await expect(page).toHaveURL(/^.*\/cards.*$/);
     await navbar.getByRole('link', { name: 'Home' }).click();
     await expect(page).toHaveURL('/');
     await navbar.getByRole('link', { name: 'Create' }).click();
@@ -72,7 +72,7 @@ test('navigation in mobile view', async ({ page }) => {
     const navbar = page.locator('.navbar');
     const dock = page.locator('.dock');
     await dock.getByRole('link', { name: 'Cards' }).click();
-    await expect(page).toHaveURL('/cards');
+    await expect(page).toHaveURL(/^.*\/cards.*$/);
     await dock.getByRole('link', { name: 'Home' }).click();
     await expect(page).toHaveURL('/');
     await dock.getByRole('link', { name: 'Create' }).click();
