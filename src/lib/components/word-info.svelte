@@ -38,7 +38,7 @@
     }
 
     async function loadWordInfo(): Promise<void> {
-        if (!isLoaded()) {
+        if (!isLoaded() && word && word.id) {
             const info = await getFromDictionary<DictionaryapiDto[]>(word, "dictionaryapi", apiDictionaryapi.getWord);
             word.dictionary.addFromDictionaryapi(info);
             word = word;

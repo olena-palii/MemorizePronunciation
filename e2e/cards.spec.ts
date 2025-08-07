@@ -48,13 +48,37 @@ async function mockAudioRecording(page) {
 	});
 }
 
+async function deleteWord(page, word: string) {
+	const rows = page.locator('table .word-row');
+	const rowToDelete = rows.filter({ hasText: word });
+	await expect(rowToDelete).toHaveCount(1);
+	await rowToDelete.locator('.word-delete').click();
+	await expect(rowToDelete).toHaveCount(0);
+}
+
 const customWords = [{ "id": 202, "word": "unknown-one", "created": "2025-07-12T19:39:22.660Z", "learned": null }, { "id": 201, "word": "unknown-two", "created": "2025-07-12T19:39:13.494Z", "learned": null }, { "id": 197, "word": "learned-one", "created": "2025-07-12T19:38:39.936Z", "learned": "2025-07-12T19:38:55.849Z" }, { "id": 198, "word": "learned-two", "created": "2025-07-12T19:38:44.915Z", "learned": "2025-07-12T19:38:55.512Z" }];
 
 async function mockWordsAPI(page) {
 	await page.route('*/**/api/words*', async route => {
-		await route.fulfill({
-			body: JSON.stringify(customWords)
-		});
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				body: JSON.stringify(customWords)
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}
+
+async function mockEmptyWordsAPI(page) {
+	await page.route('*/**/api/words*', async route => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				body: JSON.stringify([])
+			});
+		} else {
+			await route.continue();
+		}
 	});
 }
 
@@ -74,7 +98,20 @@ async function mockResetLearningAPI(page) {
 	});
 }
 
-const customDictionaryapi= [{"word":"unknown-one","phonetic":"/ˈphonetic1/","phonetics":[{"text":"/ˈphonetic2/"},{"text":"/ˈphonetic3/"}],"meanings":[{"partOfSpeech":"part1","definitions":[{"definition":"definition1"},{"definition":"definition2"}]},{"partOfSpeech":"part2","definitions":[{"definition":"definition3","example":"example3"}]}]}, {"word":"unknown-one","phonetics":[{"text":"/ˈphonetic4/"}],"meanings":[{"partOfSpeech":"part3","definitions":[{"definition":"definition4"}]}]}];
+async function mockDeleteWordAPI(page) {
+	await page.route('*/**/api/words/*', async route => {
+		if (route.request().method() === 'DELETE') {
+			await route.fulfill({
+				status: 200,
+				body: JSON.stringify({ "deleted": 1 })
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}
+
+const customDictionaryapi = [{ "word": "unknown-one", "phonetic": "/ˈphonetic1/", "phonetics": [{ "text": "/ˈphonetic2/" }, { "text": "/ˈphonetic3/" }], "meanings": [{ "partOfSpeech": "part1", "definitions": [{ "definition": "definition1" }, { "definition": "definition2" }] }, { "partOfSpeech": "part2", "definitions": [{ "definition": "definition3", "example": "example3" }] }] }, { "word": "unknown-one", "phonetics": [{ "text": "/ˈphonetic4/" }], "meanings": [{ "partOfSpeech": "part3", "definitions": [{ "definition": "definition4" }] }] }];
 
 async function mockDictionaryAPI(page) {
 	await page.route('*/**/api/words/*/dictionary/dictionaryapi', async route => {
@@ -121,13 +158,11 @@ test('cards page has expected components', async ({ page }) => {
 });
 
 test('empty table', async ({ page }) => {
-	await page.route('*/**/api/words*', async route => {
-		await route.fulfill({
-			body: JSON.stringify([])
-		});
-	});
+	await mockEmptyWordsAPI(page);
 	await page.reload();
 	await expect(page.locator('#word-card h2')).toHaveText("word");
+	const url = new URL(page.url());
+	expect(url.searchParams.get('id')).toBeNull();
 });
 
 test('default card', async ({ page }) => {
@@ -408,7 +443,7 @@ test('reset learning on table', async ({ page }) => {
 });
 
 test('copy words from table with all words', async ({ page }) => {
-	await page.locator('#words-all').getByRole('button', { name: 'Copy to clipboard' }).click();	
+	await page.locator('#words-all').getByRole('button', { name: 'Copy to clipboard' }).click();
 	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
 	expect(clipboardContent).toBe("unknown-one\nunknown-two\nlearned-one\nlearned-two");
 	await expect(page.locator('.toast .alert-success').last()).toHaveText('Copied to clipboard');
@@ -419,7 +454,7 @@ test('word info from db', async ({ page }) => {
 	await expect(page.locator('#dictionary-info')).toBeVisible();
 	await expect(page.locator('#dictionary-info h3')).toHaveText("unknown-one");
 	await expect(page.locator('#dictionary-info .phonetics')).toHaveText("/ˈphonetic1/ /ˈphonetic2/ /ˈphonetic3/ /ˈphonetic4/");
-	
+
 	const meanings = page.locator('#dictionary-info .meaning');
 	await expect(meanings).toHaveCount(3);
 
@@ -446,12 +481,12 @@ test('word info from dictionaryapi', async ({ page }) => {
 	await mockEmptyDictionaryAPI(page);
 	await mockDictionaryapiAPI(page);
 	await page.reload();
-	
+
 	await page.getByRole('button', { name: 'Open word dictionary info' }).click();
 	await expect(page.locator('#dictionary-info')).toBeVisible();
 	await expect(page.locator('#dictionary-info h3')).toHaveText("unknown-one");
 	await expect(page.locator('#dictionary-info .phonetics')).toHaveText("/ˈphonetic1/ /ˈphonetic2/ /ˈphonetic3/ /ˈphonetic4/");
-	
+
 	const meanings = page.locator('#dictionary-info .meaning');
 	await expect(meanings).toHaveCount(3);
 
@@ -505,6 +540,57 @@ test('500 error handling on mark as known', async ({ page }) => {
 	});
 	await cardNavigation.getByRole('button', { name: 'Mark as known' }).click();
 	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to save words');
+});
+
+test('open page with id of word in params', async ({ page }) => {
+	const cardTitle = page.locator('#word-card h2');
+	const word = customWords[1];
+	await page.goto(`/cards?id=${word.id}`);
+	await expect(cardTitle).toHaveText(word.word);
+});
+
+test('open page with non-existing id of word in params', async ({ page }) => {
+	const word = customWords[1];
+	await page.goto(`/cards?id=test`);
+	await expect(page.locator('#word-card h2')).toHaveText(customWords[0].word);
+});
+
+test('open page without id param', async ({ page }) => {
+	const cardTitle = page.locator('#word-card h2');
+	const word = customWords[0];
+	await expect(cardTitle).toHaveText(word.word);
+	const url = new URL(page.url());
+	expect(url.searchParams.get('id')).toBe(word.id.toString());
+});
+
+test('change id param in url when selecting next word', async ({ page }) => {
+	const cardTitle = page.locator('#word-card h2');
+	await expect(cardTitle).toHaveText(customWords[0].word);
+	await page.keyboard.press('ArrowDown');
+	await expect(cardTitle).toHaveText(customWords[1].word);
+	const url = new URL(page.url());
+	expect(url.searchParams.get('id')).toBe(customWords[1].id.toString());
+});
+
+test('change id param in url when deleting word', async ({ page }) => {
+	await mockDeleteWordAPI(page);
+	const cardTitle = page.locator('#word-card h2');
+	const deletedWord = customWords[0];
+	const nextWord = customWords[1];
+	await expect(cardTitle).toHaveText(deletedWord.word);
+	await deleteWord(page, deletedWord.word);
+	await expect(cardTitle).toHaveText(nextWord.word);
+	const url = new URL(page.url());
+	expect(url.searchParams.get('id')).toBe(nextWord.id.toString());
+});
+
+test('change id param in url when deleting all words', async ({ page }) => {
+	await mockDeleteWordAPI(page);
+	const cardTitle = page.locator('#word-card h2');
+	for (const word of customWords) await deleteWord(page, word.word);
+	await expect(cardTitle).toHaveText("word");
+	const url = new URL(page.url());
+	expect(url.searchParams.get('id')).toBeNull();
 });
 
 // #endregion

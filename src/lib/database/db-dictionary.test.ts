@@ -93,3 +93,9 @@ test('delete dictionaries when word is deleted', () => {
     const dictionariesAfter = dbDictionary.getDictionaries(wordId);
     expect(dictionariesAfter.length).toBe(0);
 });
+
+test('do not save dictionary for non-existing word', () => {
+    dbDictionary.saveDictionary(0, 'source-7', 'dictionary-7');
+    const dictionaries = dbDictionary.getDictionaries(0);
+    expect(dictionaries.length).toBe(0);
+});

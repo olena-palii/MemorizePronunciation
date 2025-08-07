@@ -157,4 +157,14 @@ test('500 error handling on delete word', async ({ page }) => {
 	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to delete words');
 });
 
+test('double click on word to open cards page', async ({ page }) => {
+	modifyWordsResponse(page, customWords);
+	const word = customWords[1];
+	const rows = page.locator('table .word-row');
+	const rowToNavigate = rows.filter({ hasText: word.word });
+	await expect(rowToNavigate).toHaveCount(1);
+	await rowToNavigate.dblclick();
+	await expect(page).toHaveURL(`/cards?id=${word.id}`);
+});
+
 // #endregion
