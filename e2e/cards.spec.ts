@@ -584,7 +584,7 @@ test('change id param in url when deleting word @Te09eb401', async ({ page }) =>
 	expect(url.searchParams.get('id')).toBe(nextWord.id.toString());
 });
 
-test('change id param in url when deleting all words @T4c783332', async ({ page }) => {
+test('change id param in url when deleting all words @Tc477ee74', async ({ page }) => {
 	await mockDeleteWordAPI(page);
 	const cardTitle = page.locator('#word-card h2');
 	for (const word of customWords) await deleteWord(page, word.word);
