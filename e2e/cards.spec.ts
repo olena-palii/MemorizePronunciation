@@ -152,12 +152,12 @@ test.beforeEach(async ({ page, context }) => {
 	await page.goto('/cards');
 });
 
-test('cards page has expected components', async ({ page }) => {
+test('cards page has expected components @Tc2214627', async ({ page }) => {
 	await expect(page.locator('#word-card')).toBeVisible();
 	await expect(page.locator('#words-all')).toBeVisible();
 });
 
-test('empty table', async ({ page }) => {
+test('empty table @T8cc2d47c', async ({ page }) => {
 	await mockEmptyWordsAPI(page);
 	await page.reload();
 	await expect(page.locator('#word-card h2')).toHaveText("word");
@@ -165,7 +165,7 @@ test('empty table', async ({ page }) => {
 	expect(url.searchParams.get('id')).toBeNull();
 });
 
-test('default card', async ({ page }) => {
+test('default card @T2fd54a1c', async ({ page }) => {
 	await expect(page.locator('#word-card h2')).toHaveText("unknown-one");
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation.getByRole('button', { name: 'Listen to pronunciation' })).toBeEnabled();
@@ -179,7 +179,7 @@ test('default card', async ({ page }) => {
 	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).not.toBeVisible();
 });
 
-test('select unknown card', async ({ page }) => {
+test('select unknown card @T62e64bf8', async ({ page }) => {
 	await page.locator('#words-all').getByRole('row', { name: 'learned-one' }).click();
 	await expect(page.locator('#word-card h2')).toHaveText("learned-one");
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
@@ -194,7 +194,7 @@ test('select unknown card', async ({ page }) => {
 	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).toBeEnabled();
 });
 
-test('cards navigation using next and previous buttons', async ({ page }) => {
+test('cards navigation using next and previous buttons @Taf44e235', async ({ page }) => {
 	const cardTitle = page.locator('#word-card h2');
 	await expect(cardTitle).toHaveText("unknown-one");
 	const buttonNext = page.locator('#word-card .card-navigation').getByRole('button', { name: 'Next word' });
@@ -217,7 +217,7 @@ test('cards navigation using next and previous buttons', async ({ page }) => {
 	await expect(cardTitle).toHaveText("unknown-one");
 });
 
-test('cards navigation using arrows on keyboard', async ({ page }) => {
+test('cards navigation using arrows on keyboard @T5ef2fa4a', async ({ page }) => {
 	const cardTitle = page.locator('#word-card h2');
 	await expect(cardTitle).toHaveText("unknown-one");
 	await page.keyboard.press('ArrowRight');
@@ -238,7 +238,7 @@ test('cards navigation using arrows on keyboard', async ({ page }) => {
 	await expect(cardTitle).toHaveText("unknown-one");
 });
 
-test('recording pronunciation using record buttons', async ({ page }) => {
+test('recording pronunciation using record buttons @T96cc7355', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await cardPronunciation.getByRole('button', { name: 'Start recording' }).click();
 	await expect(cardPronunciation.getByRole('button', { name: 'Start recording' })).not.toBeVisible();
@@ -252,7 +252,7 @@ test('recording pronunciation using record buttons', async ({ page }) => {
 	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
 });
 
-test('recording pronunciation using R on keyboard', async ({ page }) => {
+test('recording pronunciation using R on keyboard @T64e618ef', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation).toBeVisible();
 	await page.keyboard.press('R');
@@ -266,7 +266,7 @@ test('recording pronunciation using R on keyboard', async ({ page }) => {
 	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
 });
 
-test('recorded pronunciation is binded to word', async ({ page }) => {
+test('recorded pronunciation is binded to word @T85e53f2d', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation).toBeVisible();
 	await page.keyboard.press('R');
@@ -285,7 +285,7 @@ test('recorded pronunciation is binded to word', async ({ page }) => {
 	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
 });
 
-test('recording stops after 5 seconds', async ({ page }) => {
+test('recording stops after 5 seconds @Td2a1635e', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation).toBeVisible();
 	await page.keyboard.press('R');
@@ -299,7 +299,7 @@ test('recording stops after 5 seconds', async ({ page }) => {
 	await expect(cardPronunciation.getByRole('button', { name: 'Play recorded pronunciation' })).toBeEnabled();
 });
 
-test('play recorded audio using play button', async ({ page }) => {
+test('play recorded audio using play button @Tc235ec3f', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation).toBeVisible();
 	await page.keyboard.press('R');
@@ -319,7 +319,7 @@ test('play recorded audio using play button', async ({ page }) => {
 	expect(isAudioPlaying).toBeTruthy();
 });
 
-test('play recorded audio using P on keyboard', async ({ page }) => {
+test('play recorded audio using P on keyboard @T3f5cad8f', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation).toBeVisible();
 	await page.keyboard.press('R');
@@ -339,7 +339,7 @@ test('play recorded audio using P on keyboard', async ({ page }) => {
 	expect(isAudioPlaying).toBeTruthy();
 });
 
-test('listen to pronunciation using listen button', async ({ page }) => {
+test('listen to pronunciation using listen button @T6527c354', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation).toBeVisible();
 	await cardPronunciation.getByRole('button', { name: 'Listen to pronunciation' }).click()
@@ -347,7 +347,7 @@ test('listen to pronunciation using listen button', async ({ page }) => {
 	expect(isTtsCalled).toBeTruthy();
 });
 
-test('listen to pronunciation using Space on keyboard', async ({ page }) => {
+test('listen to pronunciation using Space on keyboard @Ta855fea8', async ({ page }) => {
 	const cardPronunciation = page.locator('#word-card .card-pronunciation');
 	await expect(cardPronunciation).toBeVisible();
 	await page.keyboard.press('Space');
@@ -355,7 +355,7 @@ test('listen to pronunciation using Space on keyboard', async ({ page }) => {
 	expect(isTTScalled).toBeTruthy();
 });
 
-test('mark as known on card', async ({ page }) => {
+test('mark as known on card @Tb2ed983a', async ({ page }) => {
 	const word = "unknown-one";
 	const wordNext = "unknown-two";
 	const cardTitle = page.locator('#word-card h2');
@@ -369,7 +369,7 @@ test('mark as known on card', async ({ page }) => {
 	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).toBeChecked();
 });
 
-test('mark as known using Enter on keyboard', async ({ page }) => {
+test('mark as known using Enter on keyboard @Te19d855e', async ({ page }) => {
 	const word = "unknown-one";
 	const wordNext = "unknown-two";
 	const cardTitle = page.locator('#word-card h2');
@@ -383,7 +383,7 @@ test('mark as known using Enter on keyboard', async ({ page }) => {
 	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).toBeChecked();
 });
 
-test('mark as known on table', async ({ page }) => {
+test('mark as known on table @T7d0a1200', async ({ page }) => {
 	const word = "unknown-one";
 	const cardTitle = page.locator('#word-card h2');
 	await expect(cardTitle).toHaveText(word);
@@ -397,7 +397,7 @@ test('mark as known on table', async ({ page }) => {
 	await expect(cardNavigation.getByRole('button', { name: 'Reset learning' })).toBeEnabled();
 });
 
-test('reset learning on card', async ({ page }) => {
+test('reset learning on card @Tc7ad0ec7', async ({ page }) => {
 	const word = "learned-one";
 	const wordNext = "learned-two";
 	await page.locator('#words-all').getByRole('row', { name: word }).click();
@@ -412,7 +412,7 @@ test('reset learning on card', async ({ page }) => {
 	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).not.toBeChecked();
 });
 
-test('reset learning using Enter on keyboard', async ({ page }) => {
+test('reset learning using Enter on keyboard @T17a847cf', async ({ page }) => {
 	const word = "learned-one";
 	const wordNext = "learned-two";
 	await page.locator('#words-all').getByRole('row', { name: word }).click();
@@ -427,7 +427,7 @@ test('reset learning using Enter on keyboard', async ({ page }) => {
 	await expect(wordsAll.filter({ hasText: word }).locator("input.checkbox")).not.toBeChecked();
 });
 
-test('reset learning on table', async ({ page }) => {
+test('reset learning on table @T95bd88b2', async ({ page }) => {
 	const word = "learned-one";
 	await page.locator('#words-all').getByRole('row', { name: word }).click();
 	const cardTitle = page.locator('#word-card h2');
@@ -442,14 +442,14 @@ test('reset learning on table', async ({ page }) => {
 	await expect(cardNavigation.getByRole('button', { name: 'Mark as known' })).toBeEnabled();
 });
 
-test('copy words from table with all words', async ({ page }) => {
+test('copy words from table with all words @T29edae34', async ({ page }) => {
 	await page.locator('#words-all').getByRole('button', { name: 'Copy to clipboard' }).click();
 	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
 	expect(clipboardContent).toBe("unknown-one\nunknown-two\nlearned-one\nlearned-two");
 	await expect(page.locator('.toast .alert-success').last()).toHaveText('Copied to clipboard');
 });
 
-test('word info from db', async ({ page }) => {
+test('word info from db @T74588631', async ({ page }) => {
 	await page.getByRole('button', { name: 'Open word dictionary info' }).click();
 	await expect(page.locator('#dictionary-info')).toBeVisible();
 	await expect(page.locator('#dictionary-info h3')).toHaveText("unknown-one");
@@ -476,7 +476,7 @@ test('word info from db', async ({ page }) => {
 	await expect(meanings.nth(2).locator('.definition').nth(0)).toHaveText("definition4");
 });
 
-test('word info from dictionaryapi', async ({ page }) => {
+test('word info from dictionaryapi @Ta5b8e179', async ({ page }) => {
 	await mockWordsAPI(page);
 	await mockEmptyDictionaryAPI(page);
 	await mockDictionaryapiAPI(page);
@@ -508,7 +508,7 @@ test('word info from dictionaryapi', async ({ page }) => {
 	await expect(meanings.nth(2).locator('.definition').nth(0)).toHaveText("definition4");
 });
 
-test('close word info', async ({ page }) => {
+test('close word info @T33aa13ef', async ({ page }) => {
 	await page.getByRole('button', { name: 'Open word dictionary info' }).click();
 	await expect(page.locator('#dictionary-info')).toBeVisible();
 
@@ -516,7 +516,7 @@ test('close word info', async ({ page }) => {
 	await expect(page.locator('#dictionary-info')).not.toBeVisible();
 });
 
-test('empty word info', async ({ page }) => {
+test('empty word info @T14f8a7af', async ({ page }) => {
 	await mockWordsAPI(page);
 	await mockEmptyDictionaryAPI(page);
 	await page.reload();
@@ -530,7 +530,7 @@ test('empty word info', async ({ page }) => {
 	await expect(page.locator('#dictionary-info .meaning')).toHaveText("[no definition found]");
 });
 
-test('500 error handling on mark as known', async ({ page }) => {
+test('500 error handling on mark as known @T03c1c75e', async ({ page }) => {
 	await expect(page.locator('#word-card h2')).toHaveText("unknown-one");
 	const cardNavigation = page.locator('#word-card .card-navigation');
 	await page.route('*/**/api/words*', async route => {
@@ -542,20 +542,20 @@ test('500 error handling on mark as known', async ({ page }) => {
 	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to save words');
 });
 
-test('open page with id of word in params', async ({ page }) => {
+test('open page with id of word in params @Tf258a235', async ({ page }) => {
 	const cardTitle = page.locator('#word-card h2');
 	const word = customWords[1];
 	await page.goto(`/cards?id=${word.id}`);
 	await expect(cardTitle).toHaveText(word.word);
 });
 
-test('open page with non-existing id of word in params', async ({ page }) => {
+test('open page with non-existing id of word in params @T06ed1e17', async ({ page }) => {
 	const word = customWords[1];
 	await page.goto(`/cards?id=test`);
 	await expect(page.locator('#word-card h2')).toHaveText(customWords[0].word);
 });
 
-test('open page without id param', async ({ page }) => {
+test('open page without id param @Tfe7807e8', async ({ page }) => {
 	const cardTitle = page.locator('#word-card h2');
 	const word = customWords[0];
 	await expect(cardTitle).toHaveText(word.word);
@@ -563,7 +563,7 @@ test('open page without id param', async ({ page }) => {
 	expect(url.searchParams.get('id')).toBe(word.id.toString());
 });
 
-test('change id param in url when selecting next word', async ({ page }) => {
+test('change id param in url when selecting next word @Tcea737a5', async ({ page }) => {
 	const cardTitle = page.locator('#word-card h2');
 	await expect(cardTitle).toHaveText(customWords[0].word);
 	await page.keyboard.press('ArrowDown');
@@ -572,7 +572,7 @@ test('change id param in url when selecting next word', async ({ page }) => {
 	expect(url.searchParams.get('id')).toBe(customWords[1].id.toString());
 });
 
-test('change id param in url when deleting word', async ({ page }) => {
+test('change id param in url when deleting word @Te09eb401', async ({ page }) => {
 	await mockDeleteWordAPI(page);
 	const cardTitle = page.locator('#word-card h2');
 	const deletedWord = customWords[0];
@@ -584,7 +584,7 @@ test('change id param in url when deleting word', async ({ page }) => {
 	expect(url.searchParams.get('id')).toBe(nextWord.id.toString());
 });
 
-test('change id param in url when deleting all words', async ({ page }) => {
+test('change id param in url when deleting all words @T4c783332', async ({ page }) => {
 	await mockDeleteWordAPI(page);
 	const cardTitle = page.locator('#word-card h2');
 	for (const word of customWords) await deleteWord(page, word.word);

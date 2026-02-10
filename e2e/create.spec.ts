@@ -9,11 +9,11 @@ test.beforeEach(async ({ page }) => {
 	await page.goto('/create');
 });
 
-test('create page has expected components', async ({ page }) => {
+test('create page has expected components @T06a6e730', async ({ page }) => {
 	await expect(page.locator('#create-words')).toBeVisible();
 });
 
-test('create statistics', async ({ page }) => {
+test('create statistics @T45b5c180', async ({ page }) => {
 	await page.route('*/**/api/words*', async route => {
 		await route.fulfill({
 			body: JSON.stringify(customStat)
@@ -29,7 +29,7 @@ test('create statistics', async ({ page }) => {
 	await expect(page.locator('#stat-duplicates')).toHaveText('2 duplicates');
 });
 
-test('create words', async ({ page }) => {
+test('create words @T3e275987', async ({ page }) => {
 	const words: string[] = ["word-one", "word-two", "word-three"];
 	const text = words.join('\n');
 	await page.locator('#create-words').getByPlaceholder('Enter words, one per line').fill(text);
@@ -46,7 +46,7 @@ test('create words', async ({ page }) => {
 	}
 });
 
-test('500 error handling', async ({ page }) => {
+test('500 error handling @T937423ef', async ({ page }) => {
 	await page.route('*/**/api/words*', async route => {
 		await route.fulfill({
 			status: 500
@@ -57,7 +57,7 @@ test('500 error handling', async ({ page }) => {
 	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to save words');
 });
 
-test('no internet connection', async ({ page }) => {
+test('no internet connection @Te829daa1', async ({ page }) => {
 	await page.route('*/**/api/words*', async route => {
 		await route.abort('internetdisconnected');
 	});

@@ -2,7 +2,12 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
 	testDir: 'e2e',
-	reporter: 'html',
+	reporter: [
+		['html'],
+		['@testomatio/reporter/playwright', {
+			apiKey: process.env.TESTOMATIO,
+		}]
+	],
 	projects: [
 		{
 			name: 'chromium',

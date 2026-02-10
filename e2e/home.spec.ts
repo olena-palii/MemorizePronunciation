@@ -50,14 +50,14 @@ test.beforeEach(async ({ page, context }) => {
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 });
 
-test('home page has expected components', async ({ page }) => {
+test('home page has expected components @T8904e65e', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	await expect(page.locator('#add-word')).toBeVisible();
 	await expect(page.locator('#words-unknown')).toBeVisible();
 	await expect(page.locator('#words-learned')).toBeVisible();
 });
 
-test('home page displays words', async ({ page }) => {
+test('home page displays words @Te8e6efa6', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	await expect(page.locator('#words-unknown table .word-row')).toHaveCount(17);
 	await expect(page.locator('#words-unknown table .word-row').first().locator('.word-word')).toHaveText('rarely');
@@ -65,7 +65,7 @@ test('home page displays words', async ({ page }) => {
 	await expect(page.locator('#words-learned table .word-row').first().locator('.word-word')).toHaveText('floccinaucinihilipilifica');
 });
 
-test('learning period', async ({ page }) => {
+test('learning period @Te8a4bf22', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	const word = 'happy';
 	const learnedWords = page.locator('#words-learned table .word-row');
@@ -74,7 +74,7 @@ test('learning period', async ({ page }) => {
 	await expect(wordRow.first().locator('.word-period')).toHaveText('2 days');
 });
 
-test('filter tables by add word input', async ({ page }) => {
+test('filter tables by add word input @T3d3eab02', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	await page.locator('#add-word').getByPlaceholder('Add new word').fill('to');
 	await expect(page.locator('#words-unknown table .word-row')).toHaveCount(2);
@@ -84,13 +84,13 @@ test('filter tables by add word input', async ({ page }) => {
 	await expect(page.locator('#words-learned table .word-row').first().locator('.word-word')).toHaveText('tomorrow');
 });
 
-test('empty tables', async ({ page }) => {
+test('empty tables @Tec2754cd', async ({ page }) => {
 	modifyWordsResponse(page, []);
 	await expect(page.locator('#words-unknown table .word-row')).toHaveCount(0);
 	await expect(page.locator('#words-learned table .word-row')).toHaveCount(0);
 });
 
-test('add and delete word', async ({ page }) => {
+test('add and delete word @T6aa16ede', async ({ page }) => {
 	const word = 'new-word';
 	await createWord(page, word);
 	await expect(page.locator('.toast .alert-success').last()).toHaveText('Successfully created word');
@@ -98,7 +98,7 @@ test('add and delete word', async ({ page }) => {
 	await expect(page.locator('.toast .alert-success').last()).toHaveText('Successfully deleted word');
 });
 
-test('add duplicate word', async ({ page }) => {
+test('add duplicate word @Tb356b2ab', async ({ page }) => {
 	const word = 'duplicate-word';
 	await createWord(page, word);
 	await createWord(page, word);
@@ -106,7 +106,7 @@ test('add duplicate word', async ({ page }) => {
 	await deleteWord(page, word);
 });
 
-test('check and uncheck word', async ({ page }) => {
+test('check and uncheck word @T03c966ad', async ({ page }) => {
 	const word = 'check-word';
 	const unknownWords = page.locator('#words-unknown table .word-row');
 	const learnedWords = page.locator('#words-learned table .word-row');
@@ -122,7 +122,7 @@ test('check and uncheck word', async ({ page }) => {
 	await deleteWord(page, word);
 });
 
-test('copy words from filtered table', async ({ page }) => {
+test('copy words from filtered table @T79295624', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	await page.locator('#add-word').getByPlaceholder('Add new word').fill('to');
 	await page.locator('#words-unknown').getByRole('button', { name: 'Copy to clipboard' }).click();
@@ -136,13 +136,13 @@ test('copy words from filtered table', async ({ page }) => {
 	expect(clipboardContentLearned).toBe("tomorrow");
 });
 
-test('copy words button is disabled for empty table', async ({ page }) => {
+test('copy words button is disabled for empty table @T59ad41dd', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	await page.locator('#add-word').getByPlaceholder('Add new word').fill('non-existing-word');
 	await expect(page.locator('#words-unknown').getByRole('button', { name: 'Copy to clipboard' })).toBeDisabled();
 });
 
-test('500 error handling on delete word', async ({ page }) => {
+test('500 error handling on delete word @T660a3103', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	await expect(page.locator('#add-word')).toBeVisible();
 	await expect(page.locator('#words-unknown')).toBeVisible();
@@ -157,7 +157,7 @@ test('500 error handling on delete word', async ({ page }) => {
 	await expect(page.locator('.toast .alert-error')).toHaveText('Failed to delete words');
 });
 
-test('double click on word to open cards page', async ({ page }) => {
+test('double click on word to open cards page @T0c9a1070', async ({ page }) => {
 	modifyWordsResponse(page, customWords);
 	const word = customWords[1];
 	const rows = page.locator('table .word-row');
